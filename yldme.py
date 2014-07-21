@@ -28,8 +28,8 @@ YLDME_PRESETS = [
     ('buipj', 'http://cs.uwec.edu/~buipj', 'url'),
     ('base' , 'ALL YOUR BASE ARE BELONG TO US', 'paste'),
 ]
-YLDME_PORT    = 9000
-YLDME_ADDRESS = '0.0.0.0'
+YLDME_PORT    = 80
+YLDME_ADDRESS = '*'
 
 # Utilities --------------------------------------------------------------------
 
