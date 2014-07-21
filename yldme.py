@@ -15,6 +15,11 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 
+import pygments
+import pygments.lexers
+import pygments.formatters
+import pygments.styles
+
 # Configuration ----------------------------------------------------------------
 
 YLDME_PRESETS = [
@@ -136,7 +141,15 @@ class YldMeHandler(tornado.web.RequestHandler):
             self.application.database.hit(name)
             self.redirect(data.value)
         else:
-            self.write(data.value)
+            lexer   = pygments.lexers.guess_lexer(data.value)
+            linenos = self.get_argument('linenos', 'table')
+            style   = self.get_argument('style', 'colorful')
+            try:
+                formatter = pygments.formatters.HtmlFormatter(full=True, linenos=linenos, style=style)
+            except ClassNotFound:
+                formatter = pygments.formatters.HtmlFormatter(full=True, linenos=linenos)
+
+            self.write(pygments.highlight(data.value, lexer, formatter))
 
     def _index(self):
         pass
