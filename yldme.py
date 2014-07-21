@@ -100,7 +100,6 @@ class Database(object):
                 value,
             )
             curs = self.conn.cursor()
-
             curs.execute(Database.SQL_INSERT_DATA, data)
 
     def get(self, name):
@@ -119,7 +118,7 @@ class Database(object):
         with self.conn:
             curs = self.conn.cursor()
             curs.execute(Database.SQL_SELECT_VALUE, (value,))
-            return curs.fetchone().name
+            return curs.fetchone()
 
     def count(self):
         with self.conn:
@@ -156,23 +155,21 @@ class YldMeHandler(tornado.web.RequestHandler):
     def _index(self):
         pass
 
-    def post(self, name=None):
-        body  = json.loads(self.request.body)
-        name  = self.application.database.lookup(body['value'])
-        added = name is not None
+    def post(self, type=None):
+        value = self.request.body
+        data  = self.application.database.lookup(value)
 
-        while not added:
+        while data is None:
             try:
                 name = self.application.generate_name()
-                self.application.database.add(name, body['value'], type=body.get('type'))
-                added = True
+                self.application.database.add(name, value, type)
+                data = self.application.database.get(name)
             except sqlite3.OperationalError:
-                pass
+                continue
 
-        data = self.application.database.get(name)
         self.write(json.dumps({
-            'name' : data.name, 
-            'type' : data.type, 
+            'name' : data.name,
+            'type' : data.type,
             'value': data.value,
             'ctime': data.ctime,
             'mtime': data.mtime,
