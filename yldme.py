@@ -23,6 +23,8 @@ import pygments.styles
 # Configuration ----------------------------------------------------------------
 
 YLDME_PRESETS = [
+    ('url'  , 'http://do.yld.me', 'url'),
+    ('paste', 'http://do.yld.me', 'url'),
     ('buipj', 'http://cs.uwec.edu/~buipj', 'url'),
     ('base' , 'ALL YOUR BASE ARE BELONG TO US', 'paste'),
 ]
