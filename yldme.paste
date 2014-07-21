@@ -1,3 +1,0 @@
-#!/bin/sh
-
-curl -X POST --data-binary @- http://do.yld.me/paste
