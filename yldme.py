@@ -164,7 +164,7 @@ class YldMeHandler(tornado.web.RequestHandler):
                 name = self.application.generate_name()
                 self.application.database.add(name, value, type)
                 data = self.application.database.get(name)
-            except sqlite3.OperationalError:
+            except (sqlite3.OperationalError, sqlite3.IntegrityError):
                 continue
 
         self.write(json.dumps({
