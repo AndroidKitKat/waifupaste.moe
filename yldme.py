@@ -199,7 +199,8 @@ class YldMeApplication(tornado.web.Application):
     def run(self):
         try:
             self.listen(self.port, self.address)
-        except socket.error:
+        except socket.error as e:
+            self.logger.fatal('Unable to listen on {}:{} = {}'.format(self.address, self.port, e))
             sys.exit(1)
 
         self.ioloop.start()
