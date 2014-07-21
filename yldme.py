@@ -183,12 +183,12 @@ class YldMeApplication(tornado.web.Application):
     def __init__(self, **settings):
         tornado.web.Application.__init__(self, **settings)
 
-        self.logger    = logging.getLogger()
-        self.address   = settings.get('address', YLDME_ADDRESS)
-        self.port      = settings.get('port', YLDME_PORT)
-        self.ioloop    = tornado.ioloop.IOLoop.instance()
-        self.database  = Database()
-        self.counter   = itertools.count(self.database.count())
+        self.logger   = logging.getLogger()
+        self.address  = settings.get('address', YLDME_ADDRESS)
+        self.port     = settings.get('port', YLDME_PORT)
+        self.ioloop   = tornado.ioloop.IOLoop.instance()
+        self.database = Database()
+        self.counter  = itertools.count(self.database.count())
         self.add_handlers('', [
                 (r'.*/(.*)', YldMeHandler),
         ])
