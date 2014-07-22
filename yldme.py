@@ -22,14 +22,16 @@ import pygments.styles
 
 # Configuration ----------------------------------------------------------------
 
-YLDME_PRESETS = [
+YLDME_PRESETS  = [
     ('url'  , 'http://do.yld.me', 'url'),
     ('paste', 'http://do.yld.me', 'url'),
     ('buipj', 'http://cs.uwec.edu/~buipj', 'url'),
     ('base' , 'ALL YOUR BASE ARE BELONG TO US', 'paste'),
 ]
-YLDME_PORT    = 80
-YLDME_ADDRESS = '*'
+YLDME_PORT     = 80
+YLDME_ADDRESS  = '*'
+YLDME_ALPHABET = string.letters + string.digits
+YLDME_RECENT   = 10
 
 # Utilities --------------------------------------------------------------------
 
