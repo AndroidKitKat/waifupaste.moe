@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="/static/ico/favicon.ico">
+
+	<title>Do.Yld.Me</title>
+
+	<!-- Bootstrap core CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/flatly/bootstrap.min.css" rel="stylesheet">
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    margin: 10px;
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <!-- Static navbar -->
+	    <div class="navbar navbar-default" role="navigation">
+		<div class="container-fluid">
+		    <div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+			    <span class="sr-only">Toggle navigation</span>
+			    <span class="icon-bar"></span>
+			    <span class="icon-bar"></span>
+			    <span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">Do.Yld.Me</a>
+		    </div>
+		</div><!--/.container-fluid -->
+	    </div>
+
+	    <!-- Main component for a primary marketing message or call to action -->
+	    <div class="row-fluid">
+		<h1>Recent Entries</h1>
+		<table class="table table-striped">
+		    <thead>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Creation Time</th>
+			<th>Hits</th>
+			<th>Value</th>
+		    </thead>
+		    <tbody>
+		    {% for entry in recent %}
+			<tr>
+			    <td><a href="/{{ entry.name }}">{{ entry.name }}</a></td>
+			    <td>{{ entry.type }}</td>
+			    <td>{{ time.ctime(entry.ctime) }}</td>
+			    <td>{{ entry.hits }}</td>
+			    {% if entry.type == 'url' %}
+			    <td><a href="{{ entry.value }}">{{ entry.value }}</a></td>
+			    {% else %}
+			    <td>{{ entry.value[:100] }} {% if len(entry.value) > 100 %}...{% end %}<td>
+			    {% end %}
+			</tr>
+		    {% end %}
+		    </tbody>
+		</table>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    </body>
+</html>
