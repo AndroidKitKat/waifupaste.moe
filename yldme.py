@@ -162,22 +162,35 @@ class YldMeHandler(tornado.web.RequestHandler):
         if data is None:
             return self._index()
 
-        if data.type == 'url':
-            self.application.database.hit(name)
-            self.redirect(data.value)
-        else:
-            lexer   = pygments.lexers.guess_lexer(data.value)
-            linenos = self.get_argument('linenos', 'table')
-            style   = self.get_argument('style', 'colorful')
-            try:
-                formatter = pygments.formatters.HtmlFormatter(full=True, linenos=linenos, style=style)
-            except ClassNotFound:
-                formatter = pygments.formatters.HtmlFormatter(full=True, linenos=linenos)
+        self.application.database.hit(name)
 
-            self.write(pygments.highlight(data.value, lexer, formatter))
+        if data.type == 'url':
+            self._get_url(name, data)
+        else:
+            self._get_paste(name, data)
+
+    def _get_url(self, name, data):
+        self.redirect(data.value)
+
+    def _get_paste(self, name, data):
+        if self.get_argument('raw', '').lower() == 'true':
+            self.set_header('Content-Type', 'text/plain')
+            self.write(data.value)
+            return
+
+        lexer   = pygments.lexers.guess_lexer(data.value)
+        linenos = self.get_argument('linenos', 'table')
+        style   = self.get_argument('style', 'colorful')
+        try:
+            formatter = pygments.formatters.HtmlFormatter(full=True, linenos=linenos, style=style)
+        except ClassNotFound:
+            formatter = pygments.formatters.HtmlFormatter(full=True, linenos=linenos)
+
+        self.write(pygments.highlight(data.value, lexer, formatter))
 
     def _index(self):
-        pass
+        limit = self.get_argument('recent', YLDME_RECENT)
+        self.render('index.tmpl', **{'recent': self.application.database.recent(limit), 'time': time})
 
     def post(self, type=None):
         value = self.request.body
@@ -213,6 +226,7 @@ class YldMeApplication(tornado.web.Application):
         self.ioloop   = tornado.ioloop.IOLoop.instance()
         self.database = Database()
         self.counter  = itertools.count(self.database.count())
+
         self.add_handlers('', [
                 (r'.*/(.*)', YldMeHandler),
         ])
@@ -234,6 +248,7 @@ class YldMeApplication(tornado.web.Application):
 if __name__ == '__main__':
     tornado.options.define('debug', default=False, help='Enable debugging mode.')
     tornado.options.define('port', default=YLDME_PORT, help='Port to listen on.')
+    tornado.options.define('template_path', default=os.path.join(os.path.dirname(__file__), "templates"), help='Path to templates')
     tornado.options.parse_command_line()
 
     options = tornado.options.options.as_dict()
