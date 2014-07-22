@@ -1,6 +1,5 @@
 #!/usr/bin/env python2.7
 
-import base64
 import collections
 import itertools
 import json
@@ -9,6 +8,7 @@ import os
 import time
 import socket
 import sqlite3
+import string
 import sys
 
 import tornado.ioloop
@@ -37,6 +37,22 @@ def make_parent_directories(path):
     dirname = os.path.dirname(path)
     if not os.path.exists(dirname):
         os.makedirs(dirname)
+
+
+def integer_to_identifier(integer, alphabet=YLDME_ALPHABET):
+    ''' Returns a string given an integer identifier '''
+    identifier = ''
+    number     = integer
+    length     = len(alphabet)
+
+    while number >= length:
+        quotient   = number / length
+        remainder  = number % length
+        identifier = alphabet[remainder] + identifier
+        number     = quotient
+
+    identifier = alphabet[number] + identifier
+    return identifier
 
 # Database ---------------------------------------------------------------------
 
@@ -194,7 +210,7 @@ class YldMeApplication(tornado.web.Application):
         ])
 
     def generate_name(self):
-        return base64.b64encode(str(next(self.counter)))
+        return integer_to_identifier(next(self.counter))
 
     def run(self):
         try:
