@@ -82,11 +82,12 @@ class Database(object):
         value   BLOB NOT NULL UNIQUE
     )
     '''
-    SQL_INSERT_DATA  = 'INSERT INTO YldMe (ctime, mtime, type, name, value) VALUES (?, ?, ?, ?, ?)'
-    SQL_SELECT_NAME  = 'SELECT * FROM YldMe WHERE name = ?'
-    SQL_SELECT_VALUE = 'SELECT * FROM YldMe WHERE value = ?'
-    SQL_UPDATE_DATA  = 'UPDATE YldMe SET hits=?,mtime=? WHERE id=?'
-    SQL_COUNT_DATA   = 'SELECT Count(*) FROM YldMe'
+    SQL_INSERT_DATA   = 'INSERT INTO YldMe (ctime, mtime, type, name, value) VALUES (?, ?, ?, ?, ?)'
+    SQL_UPDATE_DATA   = 'UPDATE YldMe SET hits=?,mtime=? WHERE id=?'
+    SQL_SELECT_NAME   = 'SELECT * FROM YldMe WHERE name = ?'
+    SQL_SELECT_VALUE  = 'SELECT * FROM YldMe WHERE value = ?'
+    SQL_SELECT_COUNT  = 'SELECT Count(*) FROM YldMe'
+    SQL_SELECT_RECENT = 'SELECT * FROM YldMe ORDER BY ctime DESC LIMIT ?'
 
     def __init__(self, path=None):
         self.path = path or Database.DEFAULT_PATH
@@ -138,10 +139,15 @@ class Database(object):
             curs.execute(Database.SQL_SELECT_VALUE, (value,))
             return curs.fetchone()
 
+    def recent(self, limit):
+        with self.conn:
+            curs = self.conn.cursor()
+            return curs.execute(Database.SQL_SELECT_RECENT, (limit,))
+
     def count(self):
         with self.conn:
             curs = self.conn.cursor()
-            curs.execute(Database.SQL_COUNT_DATA)
+            curs.execute(Database.SQL_SELECT_COUNT)
             return int(curs.fetchone()[0])
 
 # Handlers ---------------------------------------------------------------------
