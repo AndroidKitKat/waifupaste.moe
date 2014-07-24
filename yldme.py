@@ -193,7 +193,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         self.render('index.tmpl', **{'recent': self.application.database.recent(limit), 'time': time})
 
     def post(self, type=None):
-        value = self.request.body
+        value = self.request.body.decode('utf-8')
         data  = self.application.database.lookup(value)
 
         while data is None:
