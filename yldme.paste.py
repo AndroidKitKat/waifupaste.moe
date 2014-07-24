@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import subprocess
 import sys
@@ -12,4 +12,4 @@ result   = requests.post(DYM_PASTE_URL, data=sys.stdin.read())
 shorturl = '{}/{}'.format(DYM_URL, result.json()['name'])
 
 subprocess.Popen(['xclip'], stdin=subprocess.PIPE).communicate(shorturl)
-print shorturl
+print(shorturl)
