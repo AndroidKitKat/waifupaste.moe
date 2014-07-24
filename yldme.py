@@ -30,7 +30,7 @@ YLDME_PRESETS  = [
 ]
 YLDME_PORT     = 80
 YLDME_ADDRESS  = '*'
-YLDME_ALPHABET = string.letters + string.digits
+YLDME_ALPHABET = string.ascii_letters + string.digits
 YLDME_RECENT   = 10
 
 # Utilities --------------------------------------------------------------------
