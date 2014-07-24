@@ -44,7 +44,7 @@ def make_parent_directories(path):
 def integer_to_identifier(integer, alphabet=YLDME_ALPHABET):
     ''' Returns a string given an integer identifier '''
     identifier = ''
-    number     = integer
+    number     = int(integer)
     length     = len(alphabet)
 
     while number >= length:
