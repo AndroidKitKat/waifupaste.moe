@@ -48,10 +48,9 @@ def integer_to_identifier(integer, alphabet=YLDME_ALPHABET):
     length     = len(alphabet)
 
     while number >= length:
-        quotient   = number / length
-        remainder  = number % length
+        quotient, remainder = divmod(number, length)
         identifier = alphabet[remainder] + identifier
-        number     = quotient
+        number     = quotient - 1
 
     identifier = alphabet[number] + identifier
     return identifier
