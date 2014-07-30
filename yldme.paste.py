@@ -11,5 +11,5 @@ DYM_PASTE_URL = DYM_URL + '/paste'
 result   = requests.post(DYM_PASTE_URL, data=sys.stdin.read())
 shorturl = '{}/{}'.format(DYM_URL, result.json()['name'])
 
-subprocess.Popen(['xclip'], stdin=subprocess.PIPE).communicate(shorturl)
+subprocess.Popen(['xclip'], stdin=subprocess.PIPE).communicate(shorturl.encode('utf-8'))
 print(shorturl)
