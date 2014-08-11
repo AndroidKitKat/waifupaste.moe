@@ -33,6 +33,10 @@ YLDME_ADDRESS  = '*'
 YLDME_ALPHABET = string.ascii_letters + string.digits
 YLDME_RECENT   = 10
 
+# Constants --------------------------------------------------------------------
+
+TRUE_STRINGS = ('1', 'true', 'on', 'yes')
+
 # Utilities --------------------------------------------------------------------
 
 def make_parent_directories(path):
@@ -172,7 +176,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         self.redirect(data.value)
 
     def _get_paste(self, name, data):
-        if self.get_argument('raw', '').lower() == 'true':
+        if self.get_argument('raw', '').lower() in TRUE_STRINGS:
             self.set_header('Content-Type', 'text/plain')
             self.write(data.value)
             return
