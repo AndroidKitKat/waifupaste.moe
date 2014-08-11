@@ -22,16 +22,17 @@ import pygments.styles
 
 # Configuration ----------------------------------------------------------------
 
-YLDME_PRESETS  = [
+YLDME_PRESETS   = [
     ('url'  , 'http://do.yld.me', 'url'),
     ('paste', 'http://do.yld.me', 'url'),
     ('buipj', 'http://cs.uwec.edu/~buipj', 'url'),
     ('base' , 'ALL YOUR BASE ARE BELONG TO US', 'paste'),
 ]
-YLDME_PORT     = 80
-YLDME_ADDRESS  = '*'
-YLDME_ALPHABET = string.ascii_letters + string.digits
-YLDME_RECENT   = 10
+YLDME_PORT      = 80
+YLDME_ADDRESS   = '*'
+YLDME_ALPHABET  = string.ascii_letters + string.digits
+YLDME_RECENT    = 10
+YLDME_MAX_TRIES = 5
 
 # Constants --------------------------------------------------------------------
 
@@ -198,14 +199,20 @@ class YldMeHandler(tornado.web.RequestHandler):
     def post(self, type=None):
         value = self.request.body.decode('utf-8')
         data  = self.application.database.lookup(value)
+        tries = 0
 
-        while data is None:
+        while data is None and tries < YLDME_MAX_TRIES:
+            tries = tries + 1
+
             try:
                 name = self.application.generate_name()
                 self.application.database.add(name, value, type)
                 data = self.application.database.get(name)
             except (sqlite3.OperationalError, sqlite3.IntegrityError):
                 continue
+
+        if tries >= YLDME_MAX_TRIES:
+            raise tornado.web.HTTPError(500, 'Could not produce new database entry')
 
         self.write(json.dumps({
             'name' : data.name,
