@@ -186,7 +186,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         style   = self.get_argument('style', 'colorful')
         try:
             formatter = pygments.formatters.HtmlFormatter(full=True, linenos=linenos, style=style)
-        except ClassNotFound:
+        except pygments.ClassNotFound:
             formatter = pygments.formatters.HtmlFormatter(full=True, linenos=linenos)
 
         self.write(pygments.highlight(data.value, lexer, formatter))
