@@ -28,8 +28,8 @@ YLDME_PRESETS   = [
     ('buipj', 'http://cs.uwec.edu/~buipj', 'url'),
     ('base' , 'ALL YOUR BASE ARE BELONG TO US', 'paste'),
 ]
-YLDME_PORT      = 80
-YLDME_ADDRESS   = '*'
+YLDME_PORT      = 9515
+YLDME_ADDRESS   = '127.0.0.1'
 YLDME_ALPHABET  = string.ascii_letters + string.digits
 YLDME_RECENT    = 10
 YLDME_MAX_TRIES = 5
