@@ -187,7 +187,8 @@ class YldMeHandler(tornado.web.RequestHandler):
 
         lexer     = pygments.lexers.guess_lexer(data.value)
         style     = self.get_argument('style', 'default')
-        formatter = pygments.formatters.HtmlFormatter(cssclass='hll', style=style)
+        linenos   = self.get_argument('linenos', False)
+        formatter = pygments.formatters.HtmlFormatter(cssclass='hll', linenos=linenos, style=style)
 
         self.render('paste.tmpl', **{
             'name'    : name,
