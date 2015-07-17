@@ -2,15 +2,14 @@
 
 import collections
 import glob
-import itertools
-import json
 import logging
 import os
-import time
+import random
 import socket
 import sqlite3
 import string
 import sys
+import time
 
 import tornado.ioloop
 import tornado.options
@@ -29,6 +28,7 @@ YLDME_PRESETS   = [
     ('buipj', 'http://cs.uwec.edu/~buipj', 'url'),
     ('base' , 'ALL YOUR BASE ARE BELONG TO US', 'paste'),
 ]
+YLDME_URL       = 'http://do.yld.me'
 YLDME_PORT      = 9515
 YLDME_ADDRESS   = '127.0.0.1'
 YLDME_ALPHABET  = string.ascii_letters + string.digits
@@ -212,20 +212,15 @@ class YldMeHandler(tornado.web.RequestHandler):
                 name = self.application.generate_name()
                 self.application.database.add(name, value, type)
                 data = self.application.database.get(name)
-            except (sqlite3.OperationalError, sqlite3.IntegrityError):
+            except (sqlite3.OperationalError, sqlite3.IntegrityError) as e:
+                self.application.logger.warn(e)
+                self.application.logger.info('name: %s', name)
                 continue
 
         if tries >= YLDME_MAX_TRIES:
             raise tornado.web.HTTPError(500, 'Could not produce new database entry')
 
-        self.write(json.dumps({
-            'name' : data.name,
-            'type' : data.type,
-            'value': data.value,
-            'ctime': data.ctime,
-            'mtime': data.mtime,
-            'hits' : data.hits,
-        }))
+        self.write('{}/{}\n'.format(YLDME_URL, data.name))
 
 # Application ------------------------------------------------------------------
 
@@ -239,7 +234,6 @@ class YldMeApplication(tornado.web.Application):
         self.port     = settings.get('port', YLDME_PORT)
         self.ioloop   = tornado.ioloop.IOLoop.instance()
         self.database = Database()
-        self.counter  = itertools.count(self.database.count())
 
         self.add_handlers('', [
                 (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': YLDME_ASSETS}),
@@ -247,7 +241,7 @@ class YldMeApplication(tornado.web.Application):
         ])
 
     def generate_name(self):
-        return integer_to_identifier(next(self.counter))
+        return integer_to_identifier(random.randrange(self.database.count()*10))
 
     def run(self):
         try:
