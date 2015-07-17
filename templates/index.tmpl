@@ -38,44 +38,14 @@
 		<div class="col-md-6">
 		    <h2>Shorten URL</h2>
 		    <pre>
-curl -s -X POST -d "$URL" http://do.yld.me/url
+curl -d "$URL" http://do.yld.me/url
 </pre>
 		</div>
 		<div class="col-md-6">
 		    <h2>Paste Text</h2>
 		    <pre>
-curl -s -X POST --data-binary @- http://do.yld.me/paste < $TEXT
+curl --data-binary @- http://do.yld.me/paste < $TEXT
 </pre>
-		</div>
-	    </div>
-
-	    <div class="row">
-		<div class="col-md-12">
-		<h2>Recent Entries</h2>
-		<table class="table table-striped table-bordered">
-		    <thead>
-			<th>Name</th>
-			<th>Type</th>
-			<th>Creation Time</th>
-			<th>Hits</th>
-			<th>Value</th>
-		    </thead>
-		    <tbody>
-		    {% for entry in recent %}
-			<tr>
-			    <td><a href="/{{ entry.name }}">{{ entry.name }}</a></td>
-			    <td>{{ entry.type }}</td>
-			    <td>{{ time.ctime(entry.ctime) }}</td>
-			    <td>{{ entry.hits }}</td>
-			    {% if entry.type == 'url' %}
-			    <td><a href="{{ entry.value }}">{{ entry.value }}</a></td>
-			    {% else %}
-			    <td>{{ entry.value[:100] }} {% if len(entry.value) > 100 %}...{% end %}</td>
-			    {% end %}
-			</tr>
-		    {% end %}
-		    </tbody>
-		</table>
 		</div>
 	    </div>
 
