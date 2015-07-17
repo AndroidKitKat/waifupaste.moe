@@ -2,6 +2,7 @@
 
 import collections
 import glob
+import hashlib
 import logging
 import os
 import random
@@ -35,6 +36,7 @@ YLDME_ALPHABET  = string.ascii_letters + string.digits
 YLDME_MAX_TRIES = 10
 YLDME_ASSETS    = os.path.join(os.path.dirname(__file__), 'assets')
 YLDME_STYLES    = os.path.join(YLDME_ASSETS, 'css', 'pygments')
+YLDME_UPLOADS   = os.path.join(os.path.dirname(__file__), 'uploads')
 
 # Constants --------------------------------------------------------------------
 
@@ -62,6 +64,10 @@ def integer_to_identifier(integer, alphabet=YLDME_ALPHABET):
     identifier = alphabet[number] + identifier
     return identifier
 
+
+def checksum(data):
+    return hashlib.sha1(data).hexdigest()
+
 # Database ---------------------------------------------------------------------
 
 YldMeTupleFields = 'id ctime mtime hits type name value'.split()
@@ -83,9 +89,9 @@ class Database(object):
         ctime   INTEGER NOT NULL,
         mtime   INTEGER NOT NULL,
         hits    INTEGER NOT NULL DEFAULT 0,
-        type    TEXT NOT NULL CHECK (type IN ('paste','url')) DEFAULT 'url',
+        type    TEXT NOT NULL CHECK (type IN ('paste','url','image')) DEFAULT 'url',
         name    TEXT NOT NULL UNIQUE,
-        value   BLOB NOT NULL UNIQUE
+        value   TEXT NOT NULL UNIQUE
     )
     '''
     SQL_INSERT_DATA   = 'INSERT INTO YldMe (ctime, mtime, type, name, value) VALUES (?, ?, ?, ?, ?)'
@@ -173,19 +179,21 @@ class YldMeHandler(tornado.web.RequestHandler):
         self.redirect(data.value)
 
     def _get_paste(self, name, data):
+        raw_data = open(os.path.join(YLDME_UPLOADS, name), 'rb').read()
+
         if self.get_argument('raw', '').lower() in TRUE_STRINGS:
             self.set_header('Content-Type', 'text/plain')
-            self.write(data.value)
+            self.write(raw_data)
             return
 
-        lexer     = pygments.lexers.guess_lexer(data.value)
+        lexer     = pygments.lexers.guess_lexer(raw_data)
         style     = self.get_argument('style', 'default')
         linenos   = self.get_argument('linenos', False)
         formatter = pygments.formatters.HtmlFormatter(cssclass='hll', linenos=linenos, style=style)
 
         self.render('paste.tmpl', **{
             'name'    : name,
-            'code'    : pygments.highlight(data.value, lexer, formatter),
+            'code'    : pygments.highlight(raw_data, lexer, formatter),
             'pygment' : style,
             'styles'  : [os.path.basename(path)[:-4] for path in sorted(glob.glob(os.path.join(YLDME_STYLES, '*.css')))],
         })
@@ -195,7 +203,11 @@ class YldMeHandler(tornado.web.RequestHandler):
 
     def post(self, type=None):
         value = self.request.body.decode('utf-8')
-        data  = self.application.database.lookup(value)
+        if type == 'url':
+            value_hash = value
+        else:
+            value_hash = checksum(value)
+        data  = self.application.database.lookup(value_hash)
         tries = 0
 
         while data is None and tries < YLDME_MAX_TRIES:
@@ -203,7 +215,10 @@ class YldMeHandler(tornado.web.RequestHandler):
 
             try:
                 name = self.application.generate_name()
-                self.application.database.add(name, value, type)
+                self.application.database.add(name, value_hash, type)
+                if type != 'url':
+                    with open(os.path.join(YLDME_UPLOADS, name), 'wb+') as fs:
+                        fs.write(value)
                 data = self.application.database.get(name)
             except (sqlite3.OperationalError, sqlite3.IntegrityError) as e:
                 self.application.logger.warn(e)
