@@ -32,7 +32,7 @@ YLDME_PORT      = 9515
 YLDME_ADDRESS   = '127.0.0.1'
 YLDME_ALPHABET  = string.ascii_letters + string.digits
 YLDME_RECENT    = 10
-YLDME_MAX_TRIES = 5
+YLDME_MAX_TRIES = 10
 
 # Constants --------------------------------------------------------------------
 
