@@ -1,0 +1,4 @@
+syntax: glob
+assets/css/pygments/*.css
+*.swp
+*.pyc
