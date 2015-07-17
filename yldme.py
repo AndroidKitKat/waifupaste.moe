@@ -9,6 +9,7 @@ import random
 import socket
 import sqlite3
 import string
+import subprocess
 import sys
 import time
 
@@ -68,6 +69,15 @@ def integer_to_identifier(integer, alphabet=YLDME_ALPHABET):
 def checksum(data):
     return hashlib.sha1(data).hexdigest()
 
+
+def determine_mimetype(path):
+    try:
+        result = subprocess.check_output(['file', '--mime-type', path])
+    except subprocess.CalledProcessError:
+        result = '{}: text/plain'.format(path)
+
+    return result.split(':', 1)[-1].strip()
+
 # Database ---------------------------------------------------------------------
 
 YldMeTupleFields = 'id ctime mtime hits type name value'.split()
@@ -89,7 +99,7 @@ class Database(object):
         ctime   INTEGER NOT NULL,
         mtime   INTEGER NOT NULL,
         hits    INTEGER NOT NULL DEFAULT 0,
-        type    TEXT NOT NULL CHECK (type IN ('paste','url','image')) DEFAULT 'url',
+        type    TEXT NOT NULL CHECK (type IN ('paste','url')) DEFAULT 'url',
         name    TEXT NOT NULL UNIQUE,
         value   TEXT NOT NULL UNIQUE
     )
@@ -179,30 +189,43 @@ class YldMeHandler(tornado.web.RequestHandler):
         self.redirect(data.value)
 
     def _get_paste(self, name, data):
-        raw_data = open(os.path.join(YLDME_UPLOADS, name), 'rb').read()
+        file_path = os.path.join(YLDME_UPLOADS, name)
+        file_data = open(file_path, 'rb').read()
+        file_mime = determine_mimetype(file_path)
 
         if self.get_argument('raw', '').lower() in TRUE_STRINGS:
-            self.set_header('Content-Type', 'text/plain')
-            self.write(raw_data)
+            self.set_header('Content-Type', file_mime)
+            self.write(file_data)
             return
 
-        lexer     = pygments.lexers.guess_lexer(raw_data)
-        style     = self.get_argument('style', 'default')
-        linenos   = self.get_argument('linenos', False)
-        formatter = pygments.formatters.HtmlFormatter(cssclass='hll', linenos=linenos, style=style)
+        style   = self.get_argument('style', 'default')
+        linenos = self.get_argument('linenos', False)
+
+        if 'text/' in file_mime:
+            lexer     = pygments.lexers.guess_lexer(file_data)
+            formatter = pygments.formatters.HtmlFormatter(cssclass='hll', linenos=linenos, style=style)
+            file_html = pygments.highlight(file_data, lexer, formatter)
+        elif 'image/' in file_mime:
+            file_html = '<div class="thumbnail"><img src="/{}?raw=1" class="img-responsive"></div>'.format(name)
+        else:
+            file_html = '''
+<div class="btn-toolbar" style="text-align: center">
+    <a href="/{}?raw=1" class="btn btn-primary"><i class="fa fa-download"></i> Download</a>
+</div>
+'''.format(name)
 
         self.render('paste.tmpl', **{
-            'name'    : name,
-            'code'    : pygments.highlight(raw_data, lexer, formatter),
-            'pygment' : style,
-            'styles'  : [os.path.basename(path)[:-4] for path in sorted(glob.glob(os.path.join(YLDME_STYLES, '*.css')))],
+            'name'      : name,
+            'file_html' : file_html,
+            'pygment'   : style,
+            'styles'    : self.application.styles,
         })
 
     def _index(self):
         self.render('index.tmpl')
 
     def post(self, type=None):
-        value = self.request.body.decode('utf-8')
+        value = self.request.body
         if type == 'url':
             value_hash = value
         else:
@@ -242,6 +265,7 @@ class YldMeApplication(tornado.web.Application):
         self.port     = settings.get('port', YLDME_PORT)
         self.ioloop   = tornado.ioloop.IOLoop.instance()
         self.database = Database()
+        self.styles   = [os.path.basename(path)[:-4] for path in sorted(glob.glob(os.path.join(YLDME_STYLES, '*.css')))]
 
         self.add_handlers('', [
                 (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': YLDME_ASSETS}),
