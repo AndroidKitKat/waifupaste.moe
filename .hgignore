@@ -1,4 +1,5 @@
 syntax: glob
 assets/css/pygments/*.css
+uploads/*
 *.swp
 *.pyc
