@@ -1,15 +1,23 @@
 #!/usr/bin/env python2.7
 
+import json
 import subprocess
 import sys
 
-import requests
+import tornado.httpclient
 
 DYM_URL       = 'http://do.yld.me'
 DYM_PASTE_URL = DYM_URL + '/paste'
 
-result   = requests.post(DYM_PASTE_URL, data=sys.stdin.read())
-shorturl = '{}/{}'.format(DYM_URL, result.json()['name'])
+httpclient = tornado.httpclient.HTTPClient()
+request    = tornado.httpclient.HTTPRequest(url=DYM_PASTE_URL, method='POST', body=sys.stdin.read())
+response   = httpclient.fetch(request)
+data       = json.loads(response.body)
+shorturl   = '{}/{}'.format(DYM_URL, data['name'])
 
-subprocess.Popen(['xclip'], stdin=subprocess.PIPE).communicate(shorturl.encode('utf-8'))
+try:
+    subprocess.Popen(['xclip'], stdin=subprocess.PIPE).communicate(shorturl.encode('utf-8'))
+except OSError:
+    pass
+
 print(shorturl)
