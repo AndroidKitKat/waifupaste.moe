@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.7
 
 import collections
+import glob
 import itertools
 import json
 import logging
@@ -33,6 +34,8 @@ YLDME_ADDRESS   = '127.0.0.1'
 YLDME_ALPHABET  = string.ascii_letters + string.digits
 YLDME_RECENT    = 10
 YLDME_MAX_TRIES = 10
+YLDME_ASSETS    = os.path.join(os.path.dirname(__file__), 'assets')
+YLDME_STYLES    = os.path.join(YLDME_ASSETS, 'css', 'pygments')
 
 # Constants --------------------------------------------------------------------
 
@@ -182,15 +185,16 @@ class YldMeHandler(tornado.web.RequestHandler):
             self.write(data.value)
             return
 
-        lexer   = pygments.lexers.guess_lexer(data.value)
-        linenos = self.get_argument('linenos', 'table')
-        style   = self.get_argument('style', 'colorful')
-        try:
-            formatter = pygments.formatters.HtmlFormatter(full=True, linenos=linenos, style=style)
-        except pygments.ClassNotFound:
-            formatter = pygments.formatters.HtmlFormatter(full=True, linenos=linenos)
+        lexer     = pygments.lexers.guess_lexer(data.value)
+        style     = self.get_argument('style', 'default')
+        formatter = pygments.formatters.HtmlFormatter(cssclass='hll', style=style)
 
-        self.write(pygments.highlight(data.value, lexer, formatter))
+        self.render('paste.tmpl', **{
+            'name'    : name,
+            'code'    : pygments.highlight(data.value, lexer, formatter),
+            'pygment' : style,
+            'styles'  : [os.path.basename(path)[:-4] for path in sorted(glob.glob(os.path.join(YLDME_STYLES, '*.css')))],
+        })
 
     def _index(self):
         limit = self.get_argument('recent', YLDME_RECENT)
@@ -238,7 +242,8 @@ class YldMeApplication(tornado.web.Application):
         self.counter  = itertools.count(self.database.count())
 
         self.add_handlers('', [
-                (r'.*/(.*)', YldMeHandler),
+                (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': YLDME_ASSETS}),
+                (r'.*/(.*)'       , YldMeHandler),
         ])
 
     def generate_name(self):
