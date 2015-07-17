@@ -32,7 +32,6 @@ YLDME_URL       = 'http://do.yld.me'
 YLDME_PORT      = 9515
 YLDME_ADDRESS   = '127.0.0.1'
 YLDME_ALPHABET  = string.ascii_letters + string.digits
-YLDME_RECENT    = 10
 YLDME_MAX_TRIES = 10
 YLDME_ASSETS    = os.path.join(os.path.dirname(__file__), 'assets')
 YLDME_STYLES    = os.path.join(YLDME_ASSETS, 'css', 'pygments')
@@ -94,7 +93,6 @@ class Database(object):
     SQL_SELECT_NAME   = 'SELECT * FROM YldMe WHERE name = ?'
     SQL_SELECT_VALUE  = 'SELECT * FROM YldMe WHERE value = ?'
     SQL_SELECT_COUNT  = 'SELECT Count(*) FROM YldMe'
-    SQL_SELECT_RECENT = 'SELECT * FROM YldMe ORDER BY ctime DESC LIMIT ?'
 
     def __init__(self, path=None):
         self.path = path or Database.DEFAULT_PATH
@@ -146,11 +144,6 @@ class Database(object):
             curs.execute(Database.SQL_SELECT_VALUE, (value,))
             return curs.fetchone()
 
-    def recent(self, limit):
-        with self.conn:
-            curs = self.conn.cursor()
-            return curs.execute(Database.SQL_SELECT_RECENT, (limit,))
-
     def count(self):
         with self.conn:
             curs = self.conn.cursor()
@@ -198,8 +191,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         })
 
     def _index(self):
-        limit = self.get_argument('recent', YLDME_RECENT)
-        self.render('index.tmpl', **{'recent': self.application.database.recent(limit), 'time': time})
+        self.render('index.tmpl')
 
     def post(self, type=None):
         value = self.request.body.decode('utf-8')
