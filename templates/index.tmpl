@@ -10,7 +10,8 @@
 	<title>Do.Yld.Me</title>
 
 	<!-- Bootstrap core CSS -->
-	<link href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/flatly/bootstrap.min.css" rel="stylesheet">
+	<link href="/assets/css/blugold.css" rel="stylesheet">
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -27,18 +28,14 @@
     <body>
 	<div class="container">
 
-	    <!-- Static navbar -->
-	    <div class="navbar navbar-default" role="navigation">
-		<div class="container-fluid">
-		    <div class="navbar-header">
-			<a class="navbar-brand" href="#">Do.Yld.Me</a>
-		    </div>
-		</div><!--/.container-fluid -->
+	    <div class="row">
+		<div class="page-header">
+		    <h1><i class="fa fa-clipboard"></i> Do.Yld.Me</h1>
+		</div>
 	    </div>
 
-	    <!-- Main component for a primary marketing message or call to action -->
-	    <div class="row-fluid">
-		<h1>Recent Entries</h1>
+	    <div class="row">
+		<h2>Recent Entries</h2>
 		<table class="table table-striped">
 		    <thead>
 			<th>Name</th>
@@ -63,6 +60,22 @@
 		    {% end %}
 		    </tbody>
 		</table>
+	    </div>
+
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+			Built using
+			<a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+			<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>
+			<a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
+			<a href="http://www.python.org/">Python</a>.
+		    </small>
+		    </p>
+		</footer>
 	    </div>
 
 	</div> <!-- /container -->
