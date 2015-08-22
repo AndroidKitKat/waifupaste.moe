@@ -1,3 +1,3 @@
 #!/bin/sh
 
-curl -s -X POST -d "$@" http://do.yld.me/url
+curl -s -X POST -d "$@" http://yld.me/url

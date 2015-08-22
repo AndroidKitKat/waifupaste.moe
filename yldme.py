@@ -25,12 +25,13 @@ import pygments.styles
 # Configuration ----------------------------------------------------------------
 
 YLDME_PRESETS   = [
-    ('url'  , 'http://do.yld.me', 'url'),
-    ('paste', 'http://do.yld.me', 'url'),
-    ('buipj', 'http://cs.uwec.edu/~buipj', 'url'),
-    ('base' , 'ALL YOUR BASE ARE BELONG TO US', 'paste'),
+    ('url'              , 'http://yld.me', 'url'),
+    ('paste'            , 'http://yld.me', 'url'),
+    ('buipj'            , 'http://cs.uwec.edu/~buipj', 'url'),
+    ('base'             , 'ALL YOUR BASE ARE BELONG TO US', 'paste'),
+    ('cdt-30010-fa15'   , 'https://www3.nd.edu/courses/cdt/cdt30010.01/www/', 'url'),
 ]
-YLDME_URL       = 'http://do.yld.me'
+YLDME_URL       = 'http://yld.me'
 YLDME_PORT      = 9515
 YLDME_ADDRESS   = '127.0.0.1'
 YLDME_ALPHABET  = string.ascii_letters + string.digits
