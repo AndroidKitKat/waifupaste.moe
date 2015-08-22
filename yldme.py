@@ -21,6 +21,7 @@ import pygments
 import pygments.lexers
 import pygments.formatters
 import pygments.styles
+import pygments.util
 
 # Configuration ----------------------------------------------------------------
 
@@ -203,7 +204,11 @@ class YldMeHandler(tornado.web.RequestHandler):
         linenos = self.get_argument('linenos', False)
 
         if 'text/' in file_mime:
-            lexer     = pygments.lexers.guess_lexer(file_data)
+            try:
+                lexer = pygments.lexers.guess_lexer(file_data)
+            except pygments.util.ClassNotFound:
+                lexer = pygments.lexers.get_lexer_for_mimetype('text/plain')
+
             formatter = pygments.formatters.HtmlFormatter(cssclass='hll', linenos=linenos, style=style)
             file_html = pygments.highlight(file_data, lexer, formatter)
         elif 'image/' in file_mime:
