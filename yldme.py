@@ -31,6 +31,7 @@ YLDME_PRESETS   = [
     ('buipj'            , 'http://cs.uwec.edu/~buipj', 'url'),
     ('base'             , 'ALL YOUR BASE ARE BELONG TO US', 'paste'),
     ('cdt-30010-fa15'   , 'https://www3.nd.edu/courses/cdt/cdt30010.01/www/', 'url'),
+    ('cse-34331-fa15'   , 'https://www3.nd.edu/courses/cse/cse30331.01/www/', 'url'),
 ]
 YLDME_URL       = 'http://yld.me'
 YLDME_PORT      = 9515
