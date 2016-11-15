@@ -208,7 +208,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         style   = self.get_argument('style', 'default')
         linenos = self.get_argument('linenos', False)
 
-        if 'text/' in file_mime:
+        if 'text/' in file_mime or 'message/' in file_mime:
             try:
                 lexer = pygments.lexers.guess_lexer(file_data)
             except pygments.util.ClassNotFound:
