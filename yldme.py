@@ -28,10 +28,14 @@ import pygments.util
 YLDME_PRESETS   = [
     ('url'              , 'http://yld.me', 'url'),
     ('paste'            , 'http://yld.me', 'url'),
-    ('buipj'            , 'http://cs.uwec.edu/~buipj', 'url'),
-    ('base'             , 'ALL YOUR BASE ARE BELONG TO US', 'paste'),
-    ('cdt-30010-fa15'   , 'https://www3.nd.edu/courses/cdt/cdt30010.01/www/', 'url'),
-    ('cse-34331-fa15'   , 'https://www3.nd.edu/courses/cse/cse30331.01/www/', 'url'),
+    ('pbui'             , 'http://www3.nd.edu/~pbui', 'url'),
+    ('cdt-30010-fa15'   , 'https://www3.nd.edu/~pbui/teaching/cdt.30010.fa15/', 'url'),
+    ('cdt-30020-sp16'   , 'https://www3.nd.edu/~pbui/teaching/cdt.30020.sp16/', 'url'),
+    ('cse-20189-sp16'   , 'https://www3.nd.edu/~pbui/teaching/cse.20189.sp16/', 'url'),
+    ('cse-40175-sp16'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.sp16/', 'url'),
+    ('cdt-30010-fa16'   , 'https://www3.nd.edu/~pbui/teaching/cdt.30010.fa16/', 'url'),
+    ('cse-30331-fa16'   , 'https://www3.nd.edu/~pbui/teaching/cse.30331.fa16/', 'url'),
+    ('cse-40175-fa16'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.fa16/', 'url'),
 ]
 YLDME_URL       = 'http://yld.me'
 YLDME_PORT      = 9515
