@@ -36,6 +36,9 @@ YLDME_PRESETS   = [
     ('cdt-30010-fa16'   , 'https://www3.nd.edu/~pbui/teaching/cdt.30010.fa16/', 'url'),
     ('cse-30331-fa16'   , 'https://www3.nd.edu/~pbui/teaching/cse.30331.fa16/', 'url'),
     ('cse-40175-fa16'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.fa16/', 'url'),
+    ('cse-40175-sp17'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.sp17/', 'url'),
+    ('cse-40842-sp17'   , 'https://www3.nd.edu/~pbui/teaching/cse.40842.sp17/', 'url'),
+    ('cse-20289-sp17'   , 'https://www3.nd.edu/~pbui/teaching/cse.20289.sp17/', 'url'),
 ]
 YLDME_URL       = 'http://yld.me'
 YLDME_PORT      = 9515
@@ -278,7 +281,7 @@ class YldMeApplication(tornado.web.Application):
         self.database = Database()
         self.styles   = [os.path.basename(path)[:-4] for path in sorted(glob.glob(os.path.join(YLDME_STYLES, '*.css')))]
 
-        self.add_handlers('', [
+        self.add_handlers('.*', [
                 (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': YLDME_ASSETS}),
                 (r'.*/(.*)'       , YldMeHandler),
         ])
