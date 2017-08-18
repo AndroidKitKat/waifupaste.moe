@@ -5,7 +5,7 @@ import sys
 
 import tornado.httpclient
 
-PASTE_URL  = 'http://yld.me/paste'
+PASTE_URL  = 'https://yld.me/paste'
 
 httpclient = tornado.httpclient.HTTPClient()
 request    = tornado.httpclient.HTTPRequest(url=PASTE_URL, method='POST', body=sys.stdin.read())

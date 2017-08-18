@@ -1,3 +1,3 @@
 #!/bin/sh
 
-curl -s -X POST --data-binary @- http://yld.me/paste
+curl -s -X POST --data-binary @- https://yld.me/paste
