@@ -44,7 +44,7 @@ YLDME_PRESETS   = [
     ('cse-40175-fa17'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.fa17/', 'url'),
     ('pbc-su17'         , 'https://www3.nd.edu/~pbui/teaching/pbc.su17/'      , 'url'),
 ]
-YLDME_URL       = 'http://yld.me'
+YLDME_URL       = 'https://yld.me'
 YLDME_PORT      = 9515
 YLDME_ADDRESS   = '127.0.0.1'
 YLDME_ALPHABET  = string.ascii_letters + string.digits
