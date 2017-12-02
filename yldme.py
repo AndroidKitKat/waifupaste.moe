@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 import collections
 import glob
@@ -90,7 +90,7 @@ def determine_mimetype(path):
     except subprocess.CalledProcessError:
         result = '{}: text/plain'.format(path)
 
-    return result.split(':', 1)[-1].strip()
+    return result.decode('utf8').split(':', 1)[-1].strip()
 
 # Database ---------------------------------------------------------------------
 
@@ -217,7 +217,7 @@ class YldMeHandler(tornado.web.RequestHandler):
 
         if 'text/' in file_mime or 'message/' in file_mime:
             try:
-                lexer = pygments.lexers.guess_lexer(file_data)
+                lexer = pygments.lexers.guess_lexer(file_data.decode('utf8'))
             except pygments.util.ClassNotFound:
                 lexer = pygments.lexers.get_lexer_for_mimetype('text/plain')
 
