@@ -271,6 +271,10 @@ class YldMeHandler(tornado.web.RequestHandler):
 
         self.write('{}/{}\n'.format(YLDME_URL, data.name))
 
+class YldMeRawHandler(tornado.web.RequestHandler):
+    def get(self, name=None):
+        self.redirect('/{}?raw=1'.format(name or ''))
+
 # Application ------------------------------------------------------------------
 
 class YldMeApplication(tornado.web.Application):
@@ -287,6 +291,7 @@ class YldMeApplication(tornado.web.Application):
 
         self.add_handlers('.*', [
                 (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': YLDME_ASSETS}),
+                (r'.*/raw/(.*)'   , YldMeRawHandler),
                 (r'.*/(.*)'       , YldMeHandler),
         ])
 
