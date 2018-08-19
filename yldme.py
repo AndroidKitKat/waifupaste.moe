@@ -45,6 +45,10 @@ YLDME_PRESETS   = [
     ('cse-20289-sp18'   , 'https://www3.nd.edu/~pbui/teaching/cse.20289.sp18/', 'url'),
     ('cse-40175-sp18'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.sp18/', 'url'),
     ('cse-40850-sp18'   , 'https://www3.nd.edu/~pbui/teaching/cse.40850.sp18/', 'url'),
+    ('eg-44175-su18'    , 'https://www3.nd.edu/~pbui/teaching/eg.44175.su18/' , 'url'),
+    ('cse-30341-fa18'   , 'https://www3.nd.edu/~pbui/teaching/cse.30341.fa18/', 'url'),
+    ('cse-30872-fa18'   , 'https://www3.nd.edu/~pbui/teaching/cse.30872.fa18/', 'url'),
+    ('cse-40175-fa18'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.fa18/', 'url'),
     ('pbc-su17'         , 'https://www3.nd.edu/~pbui/teaching/pbc.su17/'      , 'url'),
 ]
 YLDME_URL       = 'https://yld.me'
