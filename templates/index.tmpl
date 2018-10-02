@@ -55,8 +55,8 @@ curl --data-binary @- https://yld.me/paste < $TEXT
 		    <div class="input-group">
 				<input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()">
-						<i class="fa fa-arrow-right"></i>
+					<button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()" title="Get shortened URL">
+						<i class="fa fa-arrow-right" id="URL_button_icon"></i>
 					</button>
 				</span>
 			</div>

@@ -2,9 +2,14 @@
 $('#URL_to_copy').keypress(function (e) {
     var key = e.which;
 
-    // clear success color when new input occurs
-    $("#URL_to_copy").removeClass("alert alert-success");
-    
+    // clear success color and changes button actions when new input occurs
+    if ($("#URL_to_copy").hasClass("alert alert-success")) {
+        $("#URL_to_copy").removeClass("alert alert-success");
+        $("#shorten_url_btn").attr("title", "Get shortened URL");
+        $("#URL_button_icon").removeClass('fa fa-clipboard');
+        $("#URL_button_icon").addClass('fa fa-arrow-right');
+        $("#shorten_url_btn").attr("onclick", "shorten_url()");
+    }
     // detect if enter is pressed
     if (key == 13)  // the enter key code
     {
@@ -12,6 +17,13 @@ $('#URL_to_copy').keypress(function (e) {
         return false;
     }
 });   
+
+// copy the converted url to the clipboard
+function copy_url_url_to_clipboard(url)
+{
+    $(url).select();
+    document.execCommand("copy");
+}
 
 function shorten_url()
 {
@@ -31,5 +43,11 @@ function shorten_url()
 
         // shows that change has happened
         $("#URL_to_copy").addClass("alert alert-success");
+
+                // switch to copy to clipboard asthetics and handler
+        $("#URL_button_icon").removeClass('fa fa-arrow-right');
+        $("#URL_button_icon").addClass('fa fa-clipboard');
+        $("#shorten_url_btn").attr("title", "Copy to clipboard");
+        $("#shorten_url_btn").attr("onclick", "copy_url_url_to_clipboard('#URL_to_copy')");
     });
 }
