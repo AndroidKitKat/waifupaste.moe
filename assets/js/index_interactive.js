@@ -1,3 +1,18 @@
+// set button to read enter as keypress & to clear success upon typing
+$('#URL_to_copy').keypress(function (e) {
+    var key = e.which;
+
+    // clear success color when new input occurs
+    $("#URL_to_copy").removeClass("alert alert-success");
+    
+    // detect if enter is pressed
+    if (key == 13)  // the enter key code
+    {
+        $('#shorten_url_btn').click();
+        return false;
+    }
+});   
+
 function shorten_url()
 {
     // disable inputs and buttons while querying
@@ -15,10 +30,6 @@ function shorten_url()
         $("#URL_to_copy").val(data);
 
         // shows that change has happened
-        $("#URL_to_copy").addClass("alert alert-success")
-        $("#URL_to_copy").keypress(function () {
-            $("#URL_to_copy").removeClass("alert alert-success");
-            $("#URL_to_copy").off('change');
-        })
+        $("#URL_to_copy").addClass("alert alert-success");
     });
 }
