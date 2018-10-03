@@ -19,6 +19,8 @@
 	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 
+
+
 	<style>
 	body {
 	    margin: 10px;
@@ -42,13 +44,30 @@ curl -d "$URL" https://yld.me/url
 </pre>
 		</div>
 		<div class="col-md-6">
+		<h2>&#8203;</h2>
+		<div class="input-group">
+				<input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()" title="Get shortened URL">
+						<i class="fa fa-arrow-right" id="URL_button_icon"></i>
+					</button>
+				</span>
+			</div>
+		    
+		</div>
+	    </div>
+		<h2>&#8203;</h2>
+		<hr/>
+		<div class="row">
+		<div class="col-md-6">
 		    <h2>Paste File</h2>
 		    <pre>
 curl --data-binary @- https://yld.me/paste < $TEXT
 </pre>
 		</div>
+		<div class="col-md-6">
+		</div>
 	    </div>
-
 	    <div class="row">
 		<hr/>
 
@@ -71,5 +90,8 @@ curl --data-binary @- https://yld.me/paste < $TEXT
 	================================================== -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+	<!-- Code for using tool in browser -->
+	<script src="/assets/js/index_interactive.js"></script>
     </body>
 </html>
