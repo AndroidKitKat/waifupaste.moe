@@ -253,8 +253,10 @@ class YldMeHandler(tornado.web.RequestHandler):
         value = self.request.body
         if type == 'url':
             value_hash = value
-        else:
+        elif type == 'paste':
             value_hash = checksum(value)
+        else:
+            raise tornado.web.HTTPError(405, 'Could not post to {}'.format(type))
         data  = self.application.database.lookup(value_hash)
         tries = 0
 
