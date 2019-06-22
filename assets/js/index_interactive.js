@@ -19,7 +19,7 @@ $('#URL_to_copy').keypress(function (e) {
 });   
 
 // copy the converted url to the clipboard
-function copy_url_url_to_clipboard(url) {
+function copy_url_to_clipboard(url) {
     $(url).select();
     document.execCommand("copy");
 }
@@ -45,6 +45,6 @@ function shorten_url() {
         $("#URL_button_icon").removeClass('fa fa-arrow-right');
         $("#URL_button_icon").addClass('fa fa-clipboard');
         $("#shorten_url_btn").attr("title", "Copy to clipboard");
-        $("#shorten_url_btn").attr("onclick", "copy_url_url_to_clipboard('#URL_to_copy')");
+        $("#shorten_url_btn").attr("onclick", "copy_url_to_clipboard('#URL_to_copy')");
     });
 }
