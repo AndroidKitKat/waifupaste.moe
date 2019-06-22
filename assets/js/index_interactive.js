@@ -19,21 +19,18 @@ $('#URL_to_copy').keypress(function (e) {
 });   
 
 // copy the converted url to the clipboard
-function copy_url_url_to_clipboard(url)
-{
+function copy_url_url_to_clipboard(url) {
     $(url).select();
     document.execCommand("copy");
 }
 
-function shorten_url()
-{
+function shorten_url() {
     // disable inputs and buttons while querying
     $(".input-group").children().prop('disabled', true);
     $("#shorten_url_btn").addClass('disabled');
 
     // request shortend url
     $.post("/url", $("#URL_to_copy").val(), function (data) {
-
         // re-enable inputs and buttons
         $(".input-group").children().prop('disabled', false);
         $("#shorten_url_btn").removeClass('disabled');
@@ -44,7 +41,7 @@ function shorten_url()
         // shows that change has happened
         $("#URL_to_copy").addClass("alert alert-success");
 
-                // switch to copy to clipboard asthetics and handler
+        // switch to copy to clipboard asthetics and handler
         $("#URL_button_icon").removeClass('fa fa-arrow-right');
         $("#URL_button_icon").addClass('fa fa-clipboard');
         $("#shorten_url_btn").attr("title", "Copy to clipboard");
