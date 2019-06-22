@@ -216,7 +216,11 @@ class YldMeHandler(tornado.web.RequestHandler):
 
     def _get_paste(self, name, data):
         file_path = os.path.join(YLDME_UPLOADS, name)
-        file_data = open(file_path, 'rb').read()
+        try:
+            file_data = open(file_path, 'rb').read()
+        except (OSError, IOError):
+            raise tornado.web.HTTPError(410, 'Upload has been removed')
+
         file_mime = determine_mimetype(file_path)
 
         if self.get_argument('raw', '').lower() in TRUE_STRINGS:
