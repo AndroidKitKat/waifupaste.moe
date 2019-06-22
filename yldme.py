@@ -52,7 +52,9 @@ YLDME_PRESETS   = [
     ('cse-10001-sp19'   , 'https://www3.nd.edu/~pbui/teaching/cse.10001.sp19/', 'url'),
     ('cse-20289-sp19'   , 'https://www3.nd.edu/~pbui/teaching/cse.20289.sp19/', 'url'),
     ('cse-40842-sp19'   , 'https://www3.nd.edu/~pbui/teaching/cse.40842.sp19/', 'url'),
+    ('cse-34872-su19'   , 'https://www3.nd.edu/~pbui/teaching/cse.34872.su19/', 'url'),
     ('pbc-su17'         , 'https://www3.nd.edu/~pbui/teaching/pbc.su17/'      , 'url'),
+    ('pbc-su19'         , 'https://www3.nd.edu/~pbui/teaching/pbc.su19/'      , 'url'),
 ]
 YLDME_URL       = 'https://yld.me'
 YLDME_PORT      = 9515
