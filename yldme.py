@@ -260,9 +260,11 @@ class YldMeHandler(tornado.web.RequestHandler):
 
     def post(self, type=None):
         if 'source' in self.request.files:
-            value = self.request.files['source'][0].body
+            use_template = True
+            value        = self.request.files['source'][0].body
         else:
-            value = self.request.body
+            use_template = False
+            value        = self.request.body
 
         if type == 'url':
             value_hash = value
@@ -270,9 +272,9 @@ class YldMeHandler(tornado.web.RequestHandler):
             value_hash = checksum(value)
         else:
             raise tornado.web.HTTPError(405, 'Could not post to {}'.format(type))
+
         data  = self.application.database.lookup(value_hash)
         tries = 0
-
         while data is None and tries < YLDME_MAX_TRIES:
             tries = tries + 1
 
@@ -291,7 +293,11 @@ class YldMeHandler(tornado.web.RequestHandler):
         if tries >= YLDME_MAX_TRIES:
             raise tornado.web.HTTPError(500, 'Could not produce new database entry')
 
-        self.write('{}/{}\n'.format(YLDME_URL, data.name))
+        url = '{}/{}'.format(YLDME_URL, data.name)
+        if use_template:
+            self.render('url.tmpl', name=data.name, url=url)
+        else:
+            self.write(url + '\n')
 
 class YldMeRawHandler(tornado.web.RequestHandler):
     def get(self, name=None):
