@@ -259,7 +259,11 @@ class YldMeHandler(tornado.web.RequestHandler):
         self.render('index.tmpl')
 
     def post(self, type=None):
-        value = self.request.body
+        if 'source' in self.request.files:
+            value = self.request.files['source'][0].body
+        else:
+            value = self.request.body
+
         if type == 'url':
             value_hash = value
         elif type == 'paste':
