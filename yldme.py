@@ -200,6 +200,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         if name is None:
             return self._index()
 
+        name = name.split('.')[0]
         data = self.application.database.get(name)
         if data is None:
             return self._index()
