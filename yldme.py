@@ -12,6 +12,7 @@ import string
 import subprocess
 import sys
 import time
+import yaml
 
 import tornado.ioloop
 import tornado.options
@@ -23,61 +24,20 @@ import pygments.formatters
 import pygments.styles
 import pygments.util
 
-# Configuration ----------------------------------------------------------------
+# Constants
 
-YLDME_PRESETS   = [
-    ('url'              , 'http://yld.me', 'url'),
-    ('paste'            , 'http://yld.me', 'url'),
-    ('pbui'             , 'http://www3.nd.edu/~pbui', 'url'),
-    ('cdt-30010-fa15'   , 'https://www3.nd.edu/~pbui/teaching/cdt.30010.fa15/', 'url'),
-    ('cdt-30020-sp16'   , 'https://www3.nd.edu/~pbui/teaching/cdt.30020.sp16/', 'url'),
-    ('cse-20189-sp16'   , 'https://www3.nd.edu/~pbui/teaching/cse.20189.sp16/', 'url'),
-    ('cse-40175-sp16'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.sp16/', 'url'),
-    ('cdt-30010-fa16'   , 'https://www3.nd.edu/~pbui/teaching/cdt.30010.fa16/', 'url'),
-    ('cse-30331-fa16'   , 'https://www3.nd.edu/~pbui/teaching/cse.30331.fa16/', 'url'),
-    ('cse-40175-fa16'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.fa16/', 'url'),
-    ('cse-40175-sp17'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.sp17/', 'url'),
-    ('cse-40842-sp17'   , 'https://www3.nd.edu/~pbui/teaching/cse.40842.sp17/', 'url'),
-    ('cse-20289-sp17'   , 'https://www3.nd.edu/~pbui/teaching/cse.20289.sp17/', 'url'),
-    ('cse-30341-fa17'   , 'https://www3.nd.edu/~pbui/teaching/cse.30341.fa17/', 'url'),
-    ('cse-30872-fa17'   , 'https://www3.nd.edu/~pbui/teaching/cse.30872.fa17/', 'url'),
-    ('cse-40175-fa17'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.fa17/', 'url'),
-    ('cse-20289-sp18'   , 'https://www3.nd.edu/~pbui/teaching/cse.20289.sp18/', 'url'),
-    ('cse-40175-sp18'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.sp18/', 'url'),
-    ('cse-40850-sp18'   , 'https://www3.nd.edu/~pbui/teaching/cse.40850.sp18/', 'url'),
-    ('eg-44175-su18'    , 'https://www3.nd.edu/~pbui/teaching/eg.44175.su18/' , 'url'),
-    ('cse-30341-fa18'   , 'https://www3.nd.edu/~pbui/teaching/cse.30341.fa18/', 'url'),
-    ('cse-30872-fa18'   , 'https://www3.nd.edu/~pbui/teaching/cse.30872.fa18/', 'url'),
-    ('cse-40175-fa18'   , 'https://www3.nd.edu/~pbui/teaching/cse.40175.fa18/', 'url'),
-    ('cse-10001-sp19'   , 'https://www3.nd.edu/~pbui/teaching/cse.10001.sp19/', 'url'),
-    ('cse-20289-sp19'   , 'https://www3.nd.edu/~pbui/teaching/cse.20289.sp19/', 'url'),
-    ('cse-40842-sp19'   , 'https://www3.nd.edu/~pbui/teaching/cse.40842.sp19/', 'url'),
-    ('cse-34872-su19'   , 'https://www3.nd.edu/~pbui/teaching/cse.34872.su19/', 'url'),
-    ('pbc-su17'         , 'https://www3.nd.edu/~pbui/teaching/pbc.su17/'      , 'url'),
-    ('pbc-su19'         , 'https://www3.nd.edu/~pbui/teaching/pbc.su19/'      , 'url'),
-]
-YLDME_URL       = 'https://yld.me'
-YLDME_PORT      = 9515
 YLDME_ADDRESS   = '127.0.0.1'
-YLDME_ALPHABET  = string.ascii_letters + string.digits
-YLDME_MAX_TRIES = 10
-YLDME_ASSETS    = os.path.join(os.path.dirname(__file__), 'assets')
-YLDME_STYLES    = os.path.join(YLDME_ASSETS, 'css', 'pygments')
-YLDME_UPLOADS   = os.path.join(os.path.dirname(__file__), 'uploads')
+YLDME_PORT      = 9515
+TRUE_STRINGS    = ('1', 'true', 'on', 'yes')
 
-# Constants --------------------------------------------------------------------
-
-TRUE_STRINGS = ('1', 'true', 'on', 'yes')
-
-# Utilities --------------------------------------------------------------------
+# Utilities
 
 def make_parent_directories(path):
     dirname = os.path.dirname(path)
     if not os.path.exists(dirname):
         os.makedirs(dirname)
 
-
-def integer_to_identifier(integer, alphabet=YLDME_ALPHABET):
+def integer_to_identifier(integer, alphabet):
     ''' Returns a string given an integer identifier '''
     identifier = ''
     number     = int(integer)
@@ -104,7 +64,7 @@ def determine_mimetype(path):
 
     return result.decode('utf8').split(':', 1)[-1].strip()
 
-# Database ---------------------------------------------------------------------
+# Database
 
 YldMeTupleFields = 'id ctime mtime hits type name value'.split()
 YldMeTuple       = collections.namedtuple('YldMeTuple', YldMeTupleFields)
@@ -116,8 +76,6 @@ def DatabaseRowFactory(cursor, row):
         return row
 
 class Database(object):
-
-    DEFAULT_PATH = os.path.expanduser('~/.config/yldme/db')
 
     SQL_CREATE_TABLE = '''
     CREATE TABLE IF NOT EXISTS YldMe (
@@ -136,8 +94,8 @@ class Database(object):
     SQL_SELECT_VALUE  = 'SELECT * FROM YldMe WHERE value = ?'
     SQL_SELECT_COUNT  = 'SELECT Count(*) FROM YldMe'
 
-    def __init__(self, path=None):
-        self.path = path or Database.DEFAULT_PATH
+    def __init__(self, path=None, presets=[]):
+        self.path = path
 
         if not os.path.exists(self.path):
             make_parent_directories(self.path)
@@ -149,9 +107,9 @@ class Database(object):
             curs = self.conn.cursor()
             curs.execute(Database.SQL_CREATE_TABLE)
 
-        for name, value, type in YLDME_PRESETS:
+        for preset in presets:
             try:
-                self.add(name, value, type)
+                self.add(preset['name'], preset['link'], 'url')
             except sqlite3.IntegrityError:
                 pass
 
@@ -192,7 +150,7 @@ class Database(object):
             curs.execute(Database.SQL_SELECT_COUNT)
             return int(curs.fetchone()[0])
 
-# Handlers ---------------------------------------------------------------------
+# Handlers
 
 class YldMeHandler(tornado.web.RequestHandler):
 
@@ -216,7 +174,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         self.redirect(data.value)
 
     def _get_paste(self, name, data):
-        file_path = os.path.join(YLDME_UPLOADS, name)
+        file_path = os.path.join(self.application.uploads_dir, name)
         try:
             file_data = open(file_path, 'rb').read()
         except (OSError, IOError):
@@ -276,14 +234,14 @@ class YldMeHandler(tornado.web.RequestHandler):
 
         data  = self.application.database.lookup(value_hash)
         tries = 0
-        while data is None and tries < YLDME_MAX_TRIES:
+        while data is None and tries < self.application.max_tries:
             tries = tries + 1
 
             try:
                 name = self.application.generate_name()
                 self.application.database.add(name, value_hash, type)
                 if type != 'url':
-                    with open(os.path.join(YLDME_UPLOADS, name), 'wb+') as fs:
+                    with open(os.path.join(self.application.uploads_dir, name), 'wb+') as fs:
                         fs.write(value)
                 data = self.application.database.get(name)
             except (sqlite3.OperationalError, sqlite3.IntegrityError) as e:
@@ -291,10 +249,10 @@ class YldMeHandler(tornado.web.RequestHandler):
                 self.application.logger.info('name: %s', name)
                 continue
 
-        if tries >= YLDME_MAX_TRIES:
+        if tries >= self.application.max_tries:
             raise tornado.web.HTTPError(500, 'Could not produce new database entry')
 
-        url = '{}/{}'.format(YLDME_URL, data.name)
+        url = '{}/{}'.format(self.application.url, data.name)
         if use_template:
             self.render('url.tmpl', name=data.name, url=url)
         else:
@@ -304,28 +262,32 @@ class YldMeRawHandler(tornado.web.RequestHandler):
     def get(self, name=None):
         self.redirect('/{}?raw=1'.format(name or ''))
 
-# Application ------------------------------------------------------------------
+# Application
 
 class YldMeApplication(tornado.web.Application):
 
-    def __init__(self, **settings):
+    def __init__(self, config_dir=None, **settings):
+        self.logger   = logging.getLogger()
+        self.load_configuration(config_dir)
+
+        settings['template_path'] = settings.get('templates', self.templates_dir)
+
         tornado.web.Application.__init__(self, **settings)
 
-        self.logger   = logging.getLogger()
-        self.address  = settings.get('address', YLDME_ADDRESS)
-        self.port     = settings.get('port', YLDME_PORT)
+        self.address  = settings.get('address', self.address)
+        self.port     = settings.get('port', self.port)
         self.ioloop   = tornado.ioloop.IOLoop.instance()
-        self.database = Database()
-        self.styles   = [os.path.basename(path)[:-4] for path in sorted(glob.glob(os.path.join(YLDME_STYLES, '*.css')))]
+        self.database = Database(os.path.join(self.config_dir, 'db'), self.presets)
+        self.styles   = [os.path.basename(path)[:-4] for path in sorted(glob.glob(os.path.join(self.styles_dir, '*.css')))]
 
         self.add_handlers('.*', [
-                (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': YLDME_ASSETS}),
+                (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': self.assets_dir}),
                 (r'.*/raw/(.*)'   , YldMeRawHandler),
                 (r'.*/(.*)'       , YldMeHandler),
         ])
 
     def generate_name(self):
-        return integer_to_identifier(random.randrange(self.database.count()*10))
+        return integer_to_identifier(random.randrange(self.database.count()*10), self.alphabet)
 
     def run(self):
         try:
@@ -336,12 +298,52 @@ class YldMeApplication(tornado.web.Application):
 
         self.ioloop.start()
 
-# Main execution ---------------------------------------------------------------
+    def load_configuration(self, config_dir=None):
+        self.config_dir  = os.path.expanduser(config_dir or '~/.config/yldme')
+        self.config_path = os.path.join(self.config_dir, 'config.yaml')
+
+        if os.path.exists(self.config_path):
+            config = yaml.load(open(self.config_path))
+        else:
+            config = {}
+
+        self.logger.info('Configuration Directory: %s', self.config_dir)
+        self.logger.info('Configuration Path:      %s', self.config_path)
+
+        self.url       = config.get('url'      , 'https://yld.me')
+        self.port      = config.get('port'     , 9515)
+        self.address   = config.get('address'  , '127.0.0.1')
+        self.alphabet  = config.get('alphabet' , string.ascii_letters + string.digits)
+        self.max_tries = config.get('max_tries', 10)
+
+        self.logger.info('URL:                     %s', self.url)
+        self.logger.info('Port:                    %d', self.port)
+        self.logger.info('Address:                 %s', self.address)
+        self.logger.info('Alphabet:                %s', self.alphabet)
+        self.logger.info('Max Tries:               %d', self.max_tries)
+
+        self.assets_dir    = config.get('assets'   , os.path.join(os.path.dirname(__file__), 'assets'))
+        self.styles_dir    = config.get('styles'   , os.path.join(self.assets_dir, 'css', 'pygments'))
+        self.uploads_dir   = config.get('uploads'  , os.path.join(self.config_dir, 'uploads'))
+        self.templates_dir = config.get('templates', os.path.join(os.path.dirname(__file__), 'templates'))
+
+        self.logger.info('Assets Directory:        %s', self.assets_dir)
+        self.logger.info('Styles Directory:        %s', self.styles_dir)
+        self.logger.info('Uploads Directory:       %s', self.uploads_dir)
+        self.logger.info('Templates Directory:     %s', self.templates_dir)
+
+        self.presets = config.get('presets', [])
+        for preset in self.presets:
+            self.logger.info('Preset: %s -> %s', preset['name'], preset['link'])
+
+# Main execution
 
 if __name__ == '__main__':
-    tornado.options.define('debug', default=False, help='Enable debugging mode.')
+    tornado.options.define('address', default=YLDME_ADDRESS, help='Address to listen on.')
     tornado.options.define('port', default=YLDME_PORT, help='Port to listen on.')
-    tornado.options.define('template_path', default=os.path.join(os.path.dirname(__file__), "templates"), help='Path to templates')
+    tornado.options.define('config_dir', default='~/.config/yldme',  help='Configuration directory')
+    tornado.options.define('debug', default=False, help='Enable debugging mode.')
+    tornado.options.define('templates', default='templates', help='Path to templates')
     tornado.options.parse_command_line()
 
     options = tornado.options.options.as_dict()
