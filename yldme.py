@@ -332,6 +332,9 @@ class YldMeApplication(tornado.web.Application):
         self.logger.info('Uploads Directory:       %s', self.uploads_dir)
         self.logger.info('Templates Directory:     %s', self.templates_dir)
 
+        if not os.path.isdir(self.uploads_dir):
+            os.makedirs(self.uploads_dir)
+
         self.presets = config.get('presets', [])
         for preset in self.presets:
             self.logger.info('Preset: %s -> %s', preset['name'], preset['link'])
