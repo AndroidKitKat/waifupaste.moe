@@ -258,6 +258,9 @@ class YldMeHandler(tornado.web.RequestHandler):
         else:
             self.write(url + '\n')
 
+    def put(self, type=None):
+        return self.post(type)
+
 class YldMeRawHandler(tornado.web.RequestHandler):
     def get(self, name=None):
         self.redirect('/{}?raw=1'.format(name or ''))
