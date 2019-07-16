@@ -256,14 +256,16 @@ class YldMeHandler(tornado.web.RequestHandler):
         if use_template:
             self.render('url.tmpl', name=data.name, url=url)
         else:
+            self.set_header('Content-Type', 'text/plain')
             self.write(url + '\n')
 
     def put(self, type=None):
         return self.post(type)
 
-class YldMeRawHandler(tornado.web.RequestHandler):
+class YldMeRawHandler(YldMeHandler):
     def get(self, name=None):
-        self.redirect('/{}?raw=1'.format(name or ''))
+        self.request.arguments['raw'] = '1'
+        return YldMeHandler.get(self, name)
 
 # Application
 
