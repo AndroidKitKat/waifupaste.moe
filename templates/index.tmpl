@@ -7,7 +7,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>Yld.Me</title>
+	<title>WaifuPaste</title>
 
 	<!-- Bootstrap core CSS -->
 	<link href="/assets/css/blugold.css" rel="stylesheet">
@@ -32,7 +32,7 @@
 
 	    <div class="row">
 		<div class="page-header">
-		    <h1><i class="fa fa-clipboard"></i> Yld.Me</h1>
+		    <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">WaifuPaste</a></h1>
 		</div>
 	    </div>
 
@@ -40,7 +40,7 @@
 		<div class="col-md-6">
 		    <h2>Shorten URL</h2>
 		    <pre>
-curl -d "$URL" https://yld.me/url
+curl -d "$URL" https://waifupaste.moe/url
 </pre>
 		</div>
 		<div class="col-md-6">
@@ -60,7 +60,7 @@ curl -d "$URL" https://yld.me/url
 		<div class="col-md-6">
 		    <h2>Paste File</h2>
 		    <pre>
-curl --data-binary @- https://yld.me/paste < $TEXT
+curl --data-binary @- https://waifupaste.moe/paste < $TEXT
 </pre>
 		</div>
 		<div class="col-md-6">
@@ -81,14 +81,18 @@ curl --data-binary @- https://yld.me/paste < $TEXT
 	    <div class="row">
 		<hr/>
 
+        <img src="assets/img/{{ img }}.png" style="position: absolute; right: 20px; bottom:0px; z-index: 1000">
+
 		<footer class="text-center">
 		    <p class="text-muted">
 		    <small>
 			Built using
 			<a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
-			<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>
+			<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
 			<a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
-			<a href="http://www.python.org/">Python</a>.
+			<a href="http://www.python.org/">Python</a>. This is a fork of 
+            <a href="https://gitlab.com/pbui/yldme/">YldMe</a>. Read the 
+            <a href="https://waifupaste.moe/faq">FAQ</a>.
 		    </small>
 		    </p>
 		</footer>

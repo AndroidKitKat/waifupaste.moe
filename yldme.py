@@ -215,15 +215,25 @@ class YldMeHandler(tornado.web.RequestHandler):
         })
 
     def _index(self):
-        self.render('index.tmpl')
+        self.render('index.tmpl', **{
+            'img':random.randint(2,10)
+            })
 
-    def post(self, type=None):
+    def post(self, type=None, palaver=False):
+        if type == 'image.jpeg' or type == 'image.jpg':
+            type == 'paste'
+    
+        if palaver is True:
+            self.application.logger.info('here comes palaver in post')
+
         if 'source' in self.request.files:
             use_template = True
             value        = self.request.files['source'][0].body
         else:
             use_template = False
             value        = self.request.body
+
+        #pesky palaver
 
         if type == 'url':
             value_hash = value
@@ -233,6 +243,7 @@ class YldMeHandler(tornado.web.RequestHandler):
             raise tornado.web.HTTPError(405, 'Could not post to {}'.format(type))
 
         data  = self.application.database.lookup(value_hash)
+        
         tries = 0
         while data is None and tries < self.application.max_tries:
             tries = tries + 1
@@ -256,7 +267,17 @@ class YldMeHandler(tornado.web.RequestHandler):
         if use_template:
             self.render('url.tmpl', name=data.name, url=url)
         else:
-            self.write(url + '\n')
+            self.set_header('Content-Type','text/plain')
+            if palaver is True:
+                self.write(url)
+            else:
+                self.write(url + '\n')
+
+    def put(self, type=None):
+        if type == 'image.jpeg' or type == 'image.jpg':
+            self.application.logger.info('here comes palaver in put')
+            type = 'paste'
+        return self.post(type,True)
 
 class YldMeRawHandler(tornado.web.RequestHandler):
     def get(self, name=None):
@@ -295,7 +316,6 @@ class YldMeApplication(tornado.web.Application):
         except socket.error as e:
             self.logger.fatal('Unable to listen on {}:{} = {}'.format(self.address, self.port, e))
             sys.exit(1)
-
         self.ioloop.start()
 
     def load_configuration(self, config_dir=None):
@@ -331,6 +351,7 @@ class YldMeApplication(tornado.web.Application):
         self.logger.info('Styles Directory:        %s', self.styles_dir)
         self.logger.info('Uploads Directory:       %s', self.uploads_dir)
         self.logger.info('Templates Directory:     %s', self.templates_dir)
+        #add faq
 
         if not os.path.isdir(self.uploads_dir):
             os.makedirs(self.uploads_dir)
@@ -348,7 +369,6 @@ if __name__ == '__main__':
     tornado.options.define('debug', default=False, help='Enable debugging mode.')
     tornado.options.define('templates', default='templates', help='Path to templates')
     tornado.options.parse_command_line()
-
     options = tornado.options.options.as_dict()
     yldme   = YldMeApplication(**options)
     yldme.run()
