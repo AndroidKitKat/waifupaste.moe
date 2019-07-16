@@ -201,7 +201,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         elif 'image/' in file_mime:
             file_html = '<div class="thumbnail text-center"><img src="/raw/{}" class="img-responsive"></div>'.format(name)
         elif 'video/' in file_mime:
-            file_html = '<div class="thumbnail text-center"><video controls><source src="/raw/{}" type="{}"></video></div>'.format(name, file_mime)
+            file_html = '<div class="thumbnail text-center"><video style="height:100%;width:100%;" controls><source src="/raw/{}" type="{}" class="embed-responsive"></video></div>'.format(name, file_mime)
         else:
             file_html = '''
 <div class="btn-toolbar" style="text-align: center">
