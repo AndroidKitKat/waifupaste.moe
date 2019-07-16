@@ -199,11 +199,11 @@ class YldMeHandler(tornado.web.RequestHandler):
             formatter = pygments.formatters.HtmlFormatter(cssclass='hll', linenos=linenos, style=style)
             file_html = pygments.highlight(file_data, lexer, formatter)
         elif 'image/' in file_mime:
-            file_html = '<div class="thumbnail"><img src="/{}?raw=1" class="img-responsive"></div>'.format(name)
+            file_html = '<div class="thumbnail"><img src="/raw/{}" class="img-responsive"></div>'.format(name)
         else:
             file_html = '''
 <div class="btn-toolbar" style="text-align: center">
-    <a href="/{}?raw=1" class="btn btn-primary"><i class="fa fa-download"></i> Download</a>
+    <a href="/raw/{}" class="btn btn-primary"><i class="fa fa-download"></i> Download</a>
 </div>
 '''.format(name)
 
