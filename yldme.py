@@ -212,6 +212,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         self.render('paste.tmpl', **{
             'name'      : name,
             'file_html' : file_html,
+            'mime_type' : file_mime,
             'pygment'   : style,
             'styles'    : self.application.styles,
         })
@@ -264,10 +265,50 @@ class YldMeHandler(tornado.web.RequestHandler):
     def put(self, type=None):
         return self.post(type)
 
+
+class YldMeMarkdownHandler(YldMeHandler):
+    def get(self, name=None):
+        if name is None:
+            return self._index()
+
+        name = name.split('.')[0]
+        data = self.application.database.get(name)
+        if data is None:
+            return self._index()
+
+        self.application.database.hit(name)
+
+        if data.type != 'paste':
+            return self._index()
+
+        file_path = os.path.join(self.application.uploads_dir, name)
+        try:
+            file_data = open(file_path, 'rb').read()
+        except (OSError, IOError):
+            raise tornado.web.HTTPError(410, 'Upload has been removed')
+
+        try:
+            hilite    = markdown.extensions.codehilite.CodeHiliteExtension(noclasses=True)
+            file_html = markdown.markdown(file_data.decode(), extensions=['extra', hilite])
+        except NameError:
+            raise tornado.web.HTTPError(501, 'Server does not support Markdown')
+        except UnicodeDecodeError:
+            raise tornado.web.HTTPError(405, 'Requested resource is not a Markdown file')
+
+        self.render('paste.tmpl', **{
+            'name'      : name,
+            'file_html' : file_html,
+            'mime_type' : 'text/markdown',
+            'pygment'   : 'default',
+            'styles'    : self.application.styles,
+        })
+
+
 class YldMeRawHandler(YldMeHandler):
     def get(self, name=None):
         self.request.arguments['raw'] = '1'
         return YldMeHandler.get(self, name)
+
 
 # Application
 
@@ -289,6 +330,7 @@ class YldMeApplication(tornado.web.Application):
 
         self.add_handlers('.*', [
                 (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': self.assets_dir}),
+                (r'.*/md/(.*)'    , YldMeMarkdownHandler),
                 (r'.*/raw/(.*)'   , YldMeRawHandler),
                 (r'.*/(.*)'       , YldMeHandler),
         ])
@@ -358,6 +400,13 @@ if __name__ == '__main__':
 
     options = tornado.options.options.as_dict()
     yldme   = YldMeApplication(**options)
+
+    try:
+        import markdown
+        import markdown.extensions.codehilite
+    except ImportError:
+        yldme.logger.warn('Markdown module missing!')
+
     yldme.run()
 
 # vim: sts=4 sw=4 ts=8 expandtab ft=python

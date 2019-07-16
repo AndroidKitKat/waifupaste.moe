@@ -32,7 +32,12 @@
 	    <div class="row">
 		<div class="page-header">
 		    <ul class="nav nav-pills pull-right">
-			<li><a href="/raw/{{ name }}"><i class="fa fa-file"></i> RAW</a></li>
+			{% if mime_type == 'text/markdown' %}
+			<li><a href="/{{ name }}"><i class="fa fa-file-text-o"></i> Preview</a></li>
+			{% elif mime_type.startswith('text') %}
+			<li><a href="/md/{{ name }}"><i class="fa fa-file-code-o"></i> Markdown</a></li>
+			{% end %}
+			<li><a href="/raw/{{ name }}"><i class="fa fa-file-o"></i> RAW</a></li>
 			<li class="dropdown">
 			    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 				Style
