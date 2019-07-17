@@ -283,7 +283,10 @@ class YldMeHandler(tornado.web.RequestHandler):
             self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url)
         else:
             self.set_header('Content-Type', 'text/plain')
-            self.write(preview_url + '\n')
+            if self.get_argument('raw', '').lower() in TRUE_STRINGS:
+                self.write(raw_url)
+            else:
+                self.write(preview_url + '\n')
 
     def put(self, type=None):
         return self.post(type)
@@ -332,6 +335,10 @@ class YldMeRawHandler(YldMeHandler):
     def get(self, name=None):
         self.request.arguments['raw'] = '1'
         return YldMeHandler.get(self, name)
+
+    def post(self, type=None):
+        self.request.arguments['raw'] = '1'
+        return YldMeHandler.post(self, type)
 
 
 # Application
