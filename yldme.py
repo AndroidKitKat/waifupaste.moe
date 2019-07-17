@@ -260,7 +260,8 @@ class YldMeHandler(tornado.web.RequestHandler):
                 name = self.application.generate_name()
                 self.application.database.add(name, value_hash, type)
                 if type != 'url':
-                    with open(os.path.join(self.application.uploads_dir, name), 'wb+') as fs:
+                    path = os.path.join(self.application.uploads_dir, name)
+                    with open(path, 'wb+') as fs:
                         fs.write(value)
                 data = self.application.database.get(name)
             except (sqlite3.OperationalError, sqlite3.IntegrityError) as e:
@@ -271,12 +272,18 @@ class YldMeHandler(tornado.web.RequestHandler):
         if tries >= self.application.max_tries:
             raise tornado.web.HTTPError(500, 'Could not produce new database entry')
 
-        url = '{}/{}'.format(self.application.url, data.name)
+        preview_url = '{}/{}'.format(self.application.url, data.name)
+        if type == 'paste':
+            file_path = os.path.join(self.application.uploads_dir, data.name)
+            file_mime = determine_mimetype(file_path)
+            file_ext  = guess_extension(file_mime)
+            raw_url   = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
+
         if use_template:
-            self.render('url.tmpl', name=data.name, url=url)
+            self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url)
         else:
             self.set_header('Content-Type', 'text/plain')
-            self.write(url + '\n')
+            self.write(preview_url + '\n')
 
     def put(self, type=None):
         return self.post(type)

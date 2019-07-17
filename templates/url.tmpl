@@ -36,12 +36,23 @@
 	    </div>
 
 	    <div class="row">
-		<div class="col-md-12">
-		    <h2>Generated URL</h2>
+		<div class="col-md-6">
+		    <h2>Generated Preview URL</h2>
 		    <div class="input-group">
-			<input type="text" class="form-control" value="{{ url }}" id="URL_to_copy" readonly>
+			<input type="text" class="form-control" value="{{ preview_url }}" id="Preview_URL_to_copy" readonly>
 			<span class="input-group-btn">
-			    <button class="btn btn-default" type="submit" onclick="copy_url_to_clipboard('#URL_to_copy')" title="Copy URL">
+			    <button class="btn btn-default" type="submit" onclick="copy_url_to_clipboard('#Preview_URL_to_copy')" title="Copy Preview URL">
+				<i class="fa fa-clipboard" id="URL_button_icon"></i>
+			    </button>
+			</span>
+		    </div>
+		</div>
+		<div class="col-md-6">
+		    <h2>Generated Raw URL</h2>
+		    <div class="input-group">
+			<input type="text" class="form-control" value="{{ raw_url }}" id="Raw_URL_to_copy" readonly>
+			<span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" onclick="copy_url_to_clipboard('#Raw_URL_to_copy')" title="Copy Raw URL">
 				<i class="fa fa-clipboard" id="URL_button_icon"></i>
 			    </button>
 			</span>
