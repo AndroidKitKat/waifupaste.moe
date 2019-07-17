@@ -10,8 +10,9 @@
 	<title>WaifuPaste - {{ name }}</title>
 
 	<!-- Bootstrap core CSS -->
-	<link href="/assets/css/blugold.css" rel="stylesheet">
+	<link rel="icon" href="https://yld.me/raw/favicon">
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -35,12 +36,23 @@
 	    </div>
 
 	    <div class="row">
-		<div class="col-md-12">
-		    <h2>Generated URL</h2>
+		<div class="col-md-6">
+		    <h2>Generated Preview URL</h2>
 		    <div class="input-group">
-			<input type="text" class="form-control" value="{{ url }}" id="URL_to_copy" readonly>
+			<input type="text" class="form-control" value="{{ preview_url }}" id="Preview_URL_to_copy" readonly>
 			<span class="input-group-btn">
-			    <button class="btn btn-default" type="submit" onclick="copy_url_to_clipboard('#URL_to_copy')" title="Copy URL">
+			    <button class="btn btn-default" type="submit" onclick="copy_url_to_clipboard('#Preview_URL_to_copy')" title="Copy Preview URL">
+				<i class="fa fa-clipboard" id="URL_button_icon"></i>
+			    </button>
+			</span>
+		    </div>
+		</div>
+		<div class="col-md-6">
+		    <h2>Generated Raw URL</h2>
+		    <div class="input-group">
+			<input type="text" class="form-control" value="{{ raw_url }}" id="Raw_URL_to_copy" readonly>
+			<span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" onclick="copy_url_to_clipboard('#Raw_URL_to_copy')" title="Copy Raw URL">
 				<i class="fa fa-clipboard" id="URL_button_icon"></i>
 			    </button>
 			</span>
@@ -51,6 +63,9 @@
 	    <div class="row">
 		<hr/>
 
+        <img src="assets/img/{{ img  }}.png" style="position: absolute; right: 20px; bottom:0px; z-index: -1000; opacity: 0.7">
+
+
 		<footer class="text-center">
 		    <p class="text-muted">
 		    <small>
@@ -59,7 +74,9 @@
 			<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
 			<a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
 			<a href="http://www.python.org/">Python</a>. This is a fork of 
-            <a href="https://gitlab.com/pbui/yldme/">Yldme</a>.
+            <a href="http://gitlab.com/pbui/yldme/">YldMe</a>. Read the 
+            <a href="http://waifupaste.moe/md/faq">FAQ</a>.
+            <a href
 		    </small>
 		    </p>
 		</footer>

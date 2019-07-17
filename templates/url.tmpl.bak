@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>WaifuPaste - {{ name }}</title>
+
+	<!-- Bootstrap core CSS -->
+<!--	<link href="/assets/css/blugold.css" rel="stylesheet">-->
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<!-- Latest compiled and minified CSS -->
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    margin: 10px;
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">WaifuPaste</a> - {{ name }}</h1>
+		</div>
+	    </div>
+
+	    <div class="row">
+		<div class="col-md-6">
+		    <h2>Generated Preview URL</h2>
+		    <div class="input-group">
+			<input type="text" class="form-control" value="{{ preview_url }}" id="Preview URL_to_copy" readonly>
+			<span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" onclick="copy_url_to_clipboard('#Preview_URL_to_copy')" title="Copy Preview URL">
+				<i class="fa fa-clipboard" id="URL_button_icon"></i>
+			    </button>
+			</span>
+		    </div>
+		</div>
+	    </div>
+        <div class="col-md-6">
+            <h2>Generated Raw URL</h2>
+            <div class = "input-group">
+                <input type="text" class="form-control" value="{{ raw_url }}"id="Raw_URL_to_copy" readonly>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit" oncopy="copy_url_to_clipboard('#Raw_URL_to_copy')" title="Copy Raw URL">
+                    <i class ="fa fa-clipboard" id="URL_button_icon"></i>
+                    </button>
+                    </span>
+                    </div>
+                    </div>
+                    </div>
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+			Built using
+			<a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+			<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
+			<a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
+			<a href="http://www.python.org/">Python</a>. 
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+	<!-- Code for using tool in browser -->
+	<script src="/assets/js/index_interactive.js"></script>
+    </body>
+</html>

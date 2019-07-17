@@ -13,7 +13,7 @@ import subprocess
 import sys
 import time
 import yaml
-
+import mimetypes
 import tornado.ioloop
 import tornado.options
 import tornado.web
@@ -29,6 +29,14 @@ import pygments.util
 YLDME_ADDRESS   = '127.0.0.1'
 YLDME_PORT      = 9515
 TRUE_STRINGS    = ('1', 'true', 'on', 'yes')
+
+MIME_TYPES = {
+    'image/jpeg': '.jpg',
+    'image/png' : '.png',
+    'video/mp4' : '.mp4',
+    'text/plain': '.txt',
+}
+
 
 # Utilities
 
@@ -63,6 +71,11 @@ def determine_mimetype(path):
         result = '{}: text/plain'.format(path)
 
     return result.decode('utf8').split(':', 1)[-1].strip()
+
+def guess_extension(mime_type):
+    return(MIME_TYPES.get(mime_type)
+            or mimetypes.guess_extension(mime_type)
+            or '.txt')
 
 # Database
 
@@ -181,6 +194,7 @@ class YldMeHandler(tornado.web.RequestHandler):
             raise tornado.web.HTTPError(410, 'Upload has been removed')
 
         file_mime = determine_mimetype(file_path)
+        file_ext = guess_extension(file_mime)
 
         if self.get_argument('raw', '').lower() in TRUE_STRINGS:
             self.set_header('Content-Type', file_mime)
@@ -199,19 +213,24 @@ class YldMeHandler(tornado.web.RequestHandler):
             formatter = pygments.formatters.HtmlFormatter(cssclass='hll', linenos=linenos, style=style)
             file_html = pygments.highlight(file_data, lexer, formatter)
         elif 'image/' in file_mime:
-            file_html = '<div class="thumbnail"><img src="/{}?raw=1" class="img-responsive"></div>'.format(name)
+            file_html = '<div class="thumbnail text-center"><img src="/raw/{}" class="img-responsive"></div>'.format(name)
+        elif 'video/' in file_mime:
+            file_html = '<div class="thumbnail text-center"><video style="height:100%;width:100%;"controls><source src="/raw/{}" type="{}" class="embed-responsive"></video></div>'.format(name, file_mime)
         else:
             file_html = '''
 <div class="btn-toolbar" style="text-align: center">
-    <a href="/{}?raw=1" class="btn btn-primary"><i class="fa fa-download"></i> Download</a>
+    <a href="/raw/{}{}" class="btn btn-primary"><i class="fa fa-download"></i> Download</a>
 </div>
-'''.format(name)
+'''.format(name, file_ext)
 
         self.render('paste.tmpl', **{
             'name'      : name,
             'file_html' : file_html,
+            'file_ext'  : file_ext,
+            'mime_type' : file_mime,
             'pygment'   : style,
             'styles'    : self.application.styles,
+            'img'       : random.randint(2,10),
         })
 
     def _index(self):
@@ -252,7 +271,9 @@ class YldMeHandler(tornado.web.RequestHandler):
                 name = self.application.generate_name()
                 self.application.database.add(name, value_hash, type)
                 if type != 'url':
-                    with open(os.path.join(self.application.uploads_dir, name), 'wb+') as fs:
+                    path = os.path.join(self.application.uploads_dir, name)
+
+                    with open(path, 'wb+') as fs:
                         fs.write(value)
                 data = self.application.database.get(name)
             except (sqlite3.OperationalError, sqlite3.IntegrityError) as e:
@@ -263,15 +284,21 @@ class YldMeHandler(tornado.web.RequestHandler):
         if tries >= self.application.max_tries:
             raise tornado.web.HTTPError(500, 'Could not produce new database entry')
 
-        url = '{}/{}'.format(self.application.url, data.name)
+        preview_url = '{}/{}'.format(self.application.url, data.name)
+        if type == 'paste':
+            file_path = os.path.join(self.application.uploads_dir, data.name)
+            file_mime = determine_mimetype(file_path)
+            file_ext = guess_extension(file_mime)
+            raw_url = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
+
         if use_template:
-            self.render('url.tmpl', name=data.name, url=url)
+            self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url, **{'img':random.randint(2,10)})
         else:
             self.set_header('Content-Type','text/plain')
-            if palaver is True:
-                self.write(url)
+            if self.get_argument('raw','').lower() in TRUE_STRINGS:
+                self.write(raw_url)
             else:
-                self.write(url + '\n')
+                self.write(preview_url + '\n')
 
     def put(self, type=None):
         if type == 'image.jpeg' or type == 'image.jpg':
@@ -279,9 +306,53 @@ class YldMeHandler(tornado.web.RequestHandler):
             type = 'paste'
         return self.post(type,True)
 
-class YldMeRawHandler(tornado.web.RequestHandler):
+class YldMeMarkdownHandler(YldMeHandler):
     def get(self, name=None):
-        self.redirect('/{}?raw=1'.format(name or ''))
+        if name is None:
+            return self._index()
+
+        name = name.split('.')[0]
+        data = self.application.database.get(name)
+        if data is None:
+            return self._index()
+
+        self.application.database.hit(name)
+
+        if data.type != 'paste':
+            return self._index()
+
+        file_path = os.path.join(self.application.uploads_dir, name)
+        try:
+            file_data = open(file_path, 'rb').read()
+        except (OSError, IOError):
+            raise tornado.web.HTTPError(410, 'Upload has been removed')
+
+        try:
+            hilite    = markdown.extensions.codehilite.CodeHiliteExtension(noclasses=True)
+            file_html = markdown.markdown(file_data.decode(), extensions=['extra', hilite])
+        except NameError:
+            raise tornado.web.HTTPError(501, 'Server does not support Markdown')
+        except UnicodeDecodeError:
+            raise tornado.web.HTTPError(405, 'Requested resource is not a Markdown file')
+
+        self.render('paste.tmpl', **{
+            'name'      : name,
+            'file_html' : file_html,
+            'mime_type' : 'text/markdown',
+            'file_ext'  : '.md',
+            'pygment'   : 'default',
+            'styles'    : self.application.styles,
+            'img'       : random.randint(2,10),
+        })
+
+class YldMeRawHandler(YldMeHandler):
+    def get(self, name=None):
+        self.request.arguments['raw'] = '1'
+        # self.application.logger.info(self.type)
+        return YldMeHandler.get(self, name)
+        # self.request.arguments['raw'] = '1'
+        # return YldMeHandler.get(self, name)
+        # self.redirect('/{}?raw=1'.format(name or ''))
 
 # Application
 
@@ -301,11 +372,13 @@ class YldMeApplication(tornado.web.Application):
         self.database = Database(os.path.join(self.config_dir, 'db'), self.presets)
         self.styles   = [os.path.basename(path)[:-4] for path in sorted(glob.glob(os.path.join(self.styles_dir, '*.css')))]
 
+
         self.add_handlers('.*', [
-                (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': self.assets_dir}),
-                (r'.*/raw/(.*)'   , YldMeRawHandler),
-                (r'.*/(.*)'       , YldMeHandler),
-        ])
+            (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': self.assets_dir}),
+            (r'.*/md/(.*)'    , YldMeMarkdownHandler),
+            (r'.*/raw/(.*)'   , YldMeRawHandler),
+            (r'.*/(.*)'       , YldMeHandler),
+            ])
 
     def generate_name(self):
         return integer_to_identifier(random.randrange(self.database.count()*10), self.alphabet)
@@ -370,6 +443,11 @@ if __name__ == '__main__':
     tornado.options.define('templates', default='templates', help='Path to templates')
     tornado.options.parse_command_line()
     options = tornado.options.options.as_dict()
+    try:
+        import markdown
+        import markdown.extensions.codehilite
+    except ImportError:
+        yldme.logger.warn('Shit is missing dog')
     yldme   = YldMeApplication(**options)
     yldme.run()
 

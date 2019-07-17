@@ -11,7 +11,10 @@
 
 	<!-- Bootstrap core CSS -->
 	<link href="/assets/css/pygments/{{ pygment }}.css" rel="stylesheet">
-	<link href="/assets/css/blugold.css" rel="stylesheet">
+	<!--<link href="/assets/css/blugold.css" rel="stylesheet">-->
+    <!-- Latest compiled and minified CSS -->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -28,11 +31,39 @@
     </head>
     <body>
 	<div class="container">
+        <div class="row">
+            <div class="page-header">
+                <ul class="nav nav-pills pull-right">
+                    {% if mime_type == 'text/markdown' %}
+                    <li><a href="/{{ name  }}"><i class="fa fa-file-text-o"></i> Preview</a></li>
+                    {% elif mime_type.startswith('text') %}
+                    <li><a href="/md/{{ name  }}"><i class="fa fa-file-code-o"></i> Markdown</a></li>
+                    {% end %}
+                    <li><a href="/raw/{{ name }}{{ file_ext }}"><i class="fa fa-file-o"></i> RAW</a></li>
+                    <li class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Style
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            {% for style in styles %}
+                            <li><a href="/{{ name  }}?style={{ style  }}">{{ style  }}</a></li>
+                            {% end %}
+                        </ul>
+                        
+                    </li>
+                </ul>
+		    <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">WaifuPaste</a> - {{ name }}</h1>
+            </div>
+        </div>
 
+
+    
+<!--
 	    <div class="row">
 		<div class="page-header">
 		    <ul class="nav nav-pills pull-right">
-			<li><a href="/{{ name }}?raw=1"><i class="fa fa-file"></i> RAW</a></li>
+			<li><a href="/raw/{{ name }}"><i class="fa fa-file"></i> RAW</a></li>
 			<li class="dropdown">
 			    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 				Style
@@ -45,9 +76,8 @@
 			    </ul>
 			</li>
 		    </ul>
-		    <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">WaifuPaste</a> - {{ name }}</h1>
 		</div>
-	    </div>
+	    </div>-->
 
 	    <div class="row">
 		{% raw file_html %}
@@ -55,6 +85,8 @@
 
 	    <div class="row">
 		<hr/>
+
+        <img src="assets/img/{{ img }}.png" style="position: absolute; right:20px; bottom:0px;z-index:-1000; opacity:0.7">
 
 		<footer class="text-center">
 		    <p class="text-muted">
@@ -64,7 +96,8 @@
 			<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
 			<a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
 			<a href="http://www.python.org/">Python</a>. This is a fork of 
-            <a href="https://gitlab.com/pbui/yldme/">YldMe</a>.
+            <a href="http://gitlab.com/pbui/yldme/">YldMe</a>. Read the 
+            <a href="https://waifupaste.moe/md/faq/">FAQ</a>.
 		    </small>
 		    </p>
 		</footer>
@@ -78,5 +111,8 @@
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!-- fuck you audron-->
+    <script src="/assets/js/index_interactive.js"></script>
     </body>
 </html>
