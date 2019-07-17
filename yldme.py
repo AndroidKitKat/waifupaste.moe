@@ -359,6 +359,9 @@ class YldMeApplication(tornado.web.Application):
         self.database = Database(os.path.join(self.config_dir, 'db'), self.presets)
         self.styles   = [os.path.basename(path)[:-4] for path in sorted(glob.glob(os.path.join(self.styles_dir, '*.css')))]
 
+        self.logger.info('Port:                    %d', self.port)
+        self.logger.info('Address:                 %s', self.address)
+
         self.add_handlers('.*', [
                 (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': self.assets_dir}),
                 (r'.*/md/(.*)'    , YldMeMarkdownHandler),
@@ -367,7 +370,8 @@ class YldMeApplication(tornado.web.Application):
         ])
 
     def generate_name(self):
-        return integer_to_identifier(random.randrange(self.database.count()*10), self.alphabet)
+        count = self.database.count() or 1
+        return integer_to_identifier(random.randrange(count*10), self.alphabet)
 
     def run(self):
         try:
@@ -397,8 +401,6 @@ class YldMeApplication(tornado.web.Application):
         self.max_tries = config.get('max_tries', 10)
 
         self.logger.info('URL:                     %s', self.url)
-        self.logger.info('Port:                    %d', self.port)
-        self.logger.info('Address:                 %s', self.address)
         self.logger.info('Alphabet:                %s', self.alphabet)
         self.logger.info('Max Tries:               %d', self.max_tries)
 
