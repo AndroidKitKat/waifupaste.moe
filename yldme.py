@@ -4,6 +4,7 @@ import collections
 import glob
 import hashlib
 import logging
+import mimetypes
 import os
 import random
 import socket
@@ -29,6 +30,13 @@ import pygments.util
 YLDME_ADDRESS   = '127.0.0.1'
 YLDME_PORT      = 9515
 TRUE_STRINGS    = ('1', 'true', 'on', 'yes')
+
+MIME_TYPES = {
+    'image/jpeg': '.jpg',
+    'image/png' : '.png',
+    'video/mp4' : '.mp4',
+    'text/plain': '.txt',
+}
 
 # Utilities
 
@@ -63,6 +71,12 @@ def determine_mimetype(path):
         result = '{}: text/plain'.format(path)
 
     return result.decode('utf8').split(':', 1)[-1].strip()
+
+
+def guess_extension(mime_type):
+    return (MIME_TYPES.get(mime_type)
+            or mimetypes.guess_extension(mime_type)
+            or '.txt')
 
 # Database
 
@@ -181,6 +195,7 @@ class YldMeHandler(tornado.web.RequestHandler):
             raise tornado.web.HTTPError(410, 'Upload has been removed')
 
         file_mime = determine_mimetype(file_path)
+        file_ext  = guess_extension(file_mime)
 
         if self.get_argument('raw', '').lower() in TRUE_STRINGS:
             self.set_header('Content-Type', file_mime)
@@ -205,13 +220,14 @@ class YldMeHandler(tornado.web.RequestHandler):
         else:
             file_html = '''
 <div class="btn-toolbar" style="text-align: center">
-    <a href="/raw/{}" class="btn btn-primary"><i class="fa fa-download"></i> Download</a>
+    <a href="/raw/{}{}" class="btn btn-primary"><i class="fa fa-download"></i> Download</a>
 </div>
-'''.format(name)
+'''.format(name, file_ext)
 
         self.render('paste.tmpl', **{
             'name'      : name,
             'file_html' : file_html,
+            'file_ext'  : file_ext,
             'mime_type' : file_mime,
             'pygment'   : style,
             'styles'    : self.application.styles,
@@ -299,6 +315,7 @@ class YldMeMarkdownHandler(YldMeHandler):
             'name'      : name,
             'file_html' : file_html,
             'mime_type' : 'text/markdown',
+            'file_ext'  : '.md',
             'pygment'   : 'default',
             'styles'    : self.application.styles,
         })
