@@ -16,7 +16,7 @@ $('#URL_to_copy').keypress(function (e) {
         $('#shorten_url_btn').click();
         return false;
     }
-});   
+});
 
 // copy the converted url to the clipboard
 function copy_url_to_clipboard(url) {
@@ -48,3 +48,14 @@ function shorten_url() {
         $("#shorten_url_btn").attr("onclick", "copy_url_to_clipboard('#URL_to_copy')");
     });
 }
+
+// Update text input associated with file input based on the following:
+//
+//  https://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3
+$(function() {
+  $(document).on('change', ':file', function() {
+    var text_input = $(this).parents('.input-group').find(':text'),
+        file_value = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
+    text_input.val(file_value);
+  });
+});
