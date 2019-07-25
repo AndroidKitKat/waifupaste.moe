@@ -386,12 +386,12 @@ class YldMeApplication(tornado.web.Application):
         self.logger   = logging.getLogger()
         self.load_configuration(config_dir)
 
-        settings['template_path'] = settings.get('templates', self.templates_dir)
+        settings['template_path'] = settings.get('templates') or self.templates_dir
 
         tornado.web.Application.__init__(self, **settings)
 
-        self.address  = settings.get('address', self.address)
-        self.port     = settings.get('port', self.port)
+        self.address  = settings.get('address') or self.address
+        self.port     = settings.get('port')    or self.port
         self.ioloop   = tornado.ioloop.IOLoop.instance()
         self.database = Database(os.path.join(self.config_dir, 'db'), self.presets)
         self.styles   = [os.path.basename(path)[:-4] for path in sorted(glob.glob(os.path.join(self.styles_dir, '*.css')))]
