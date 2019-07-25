@@ -12,4 +12,4 @@ RUN	    apk update && \
 RUN	    wget -O - https://gitlab.com/pbui/yldme/-/archive/master/yldme-master.tar.gz | tar xzvf -
 
 EXPOSE	    9515
-CMD	    ["python3", "/yldme-master/yldme.py", "--config-dir=/var/lib/yldme", "--address=0.0.0.0"]
+ENTRYPOINT  ["/yldme-master/yldme.py", "--config-dir=/var/lib/yldme", "--address=0.0.0.0"]
