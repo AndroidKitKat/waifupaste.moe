@@ -3,6 +3,7 @@
 import collections
 import glob
 import hashlib
+import json
 import logging
 import mimetypes
 import os
@@ -32,10 +33,13 @@ YLDME_PORT      = 9515
 TRUE_STRINGS    = ('1', 'true', 'on', 'yes')
 
 MIME_TYPES = {
-    'image/jpeg': '.jpg',
-    'image/png' : '.png',
-    'video/mp4' : '.mp4',
-    'text/plain': '.txt',
+    'image/jpeg'        : '.jpg',
+    'image/png'         : '.png',
+    'video/mp4'         : '.mp4',
+    'text/plain'        : '.txt',
+    'text/x-c++'        : '.cpp',
+    'text/x-python'     : '.py',
+    'text/x-shellscript': '.sh',
 }
 
 # Utilities
@@ -77,6 +81,43 @@ def guess_extension(mime_type):
     return (MIME_TYPES.get(mime_type)
             or mimetypes.guess_extension(mime_type)
             or '.txt')
+
+
+def determine_text_format(file_data, file_mime='text/plain', file_ext='.txt', style='default', linenos=False):
+    file_data = file_data.decode('utf8')
+    json_data = None
+    yaml_data = None
+
+    if file_mime == 'text/plain':
+        try:
+            yaml_data = yaml.load(file_data)
+            file_mime = 'text/x-yaml'
+            file_ext  = '.yaml'
+        except yaml.parser.ParserError:
+            pass
+
+        try:
+            json_data = json.loads(file_data)
+            file_mime = 'application/json'
+            file_ext  = '.json'
+        except json.decoder.JSONDecodeError:
+            pass
+
+    if json_data:
+        lexer     = pygments.lexers.get_lexer_for_mimetype(file_mime)
+        file_data = json.dumps(json_data, indent=4)
+    elif yaml_data:
+        lexer     = pygments.lexers.get_lexer_for_mimetype(file_mime)
+        file_data = yaml.safe_dump(yaml_data, default_flow_style=False)
+    else:
+        try:
+            lexer = pygments.lexers.guess_lexer(file_data)
+        except pygments.util.ClassNotFound:
+            lexer = pygments.lexers.get_lexer_for_mimetype('text/plain')
+
+    formatter = pygments.formatters.HtmlFormatter(cssclass='hll', linenos=linenos, style=style)
+    file_html = pygments.highlight(file_data, lexer, formatter)
+    return file_ext, file_html
 
 # Database
 
@@ -206,13 +247,9 @@ class YldMeHandler(tornado.web.RequestHandler):
         linenos = self.get_argument('linenos', False)
 
         if 'text/' in file_mime or 'message/' in file_mime:
-            try:
-                lexer = pygments.lexers.guess_lexer(file_data.decode('utf8'))
-            except pygments.util.ClassNotFound:
-                lexer = pygments.lexers.get_lexer_for_mimetype('text/plain')
-
-            formatter = pygments.formatters.HtmlFormatter(cssclass='hll', linenos=linenos, style=style)
-            file_html = pygments.highlight(file_data, lexer, formatter)
+            file_ext, file_html = determine_text_format(
+                file_data, file_mime, file_ext, style, linenos
+            )
         elif 'image/' in file_mime:
             file_html = '<div class="thumbnail text-center"><img src="/raw/{}" class="img-responsive"></div>'.format(name)
         elif 'video/' in file_mime:
