@@ -465,7 +465,7 @@ if __name__ == '__main__':
     tornado.options.define('port', default=YLDME_PORT, help='Port to listen on.')
     tornado.options.define('config_dir', default='~/.config/yldme',  help='Configuration directory')
     tornado.options.define('debug', default=False, help='Enable debugging mode.')
-    tornado.options.define('templates', default='templates', help='Path to templates')
+    tornado.options.define('templates', default=None, help='Path to templates')
     tornado.options.parse_command_line()
 
     options = tornado.options.options.as_dict()
