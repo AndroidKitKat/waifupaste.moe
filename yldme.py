@@ -30,7 +30,7 @@ import pygments.util
 YLDME_ADDRESS   = '127.0.0.1'
 YLDME_PORT      = 9515
 TRUE_STRINGS    = ('1', 'true', 'on', 'yes')
-
+NUMBER_OF_WAIFUS =  len(os.listdir('assets/imgs/qts'))
 MIME_TYPES = {
     'image/jpeg': '.jpg',
     'image/png' : '.png',
@@ -39,6 +39,9 @@ MIME_TYPES = {
 }
 
 # Utilities
+
+def random_waifu():
+    return random.randint(1, NUMBER_OF_WAIFUS)
 
 def make_parent_directories(path):
     dirname = os.path.dirname(path)
@@ -230,13 +233,13 @@ class YldMeHandler(tornado.web.RequestHandler):
             'file_ext'  : file_ext,
             'mime_type' : file_mime,
             'pygment'   : style,
-            'img'       : random.randint(2,10),
+            'img'       : random_waifu(),
             'styles'    : self.application.styles,
         })
 
     def _index(self):
         self.render('index.tmpl', **{
-            'img':random.randint(2,10)
+            'img': random_waifu()
             })
 
     def post(self, type=None, imageJpeg=False):
@@ -290,7 +293,7 @@ class YldMeHandler(tornado.web.RequestHandler):
             raw_url   = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
 
         if use_template:
-            self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url, **{'img':random.randint(2,10)})
+            self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url, **{'img':random_waifu()})
         else:
             self.set_header('Content-Type', 'text/plain')
             if imageJpeg:
@@ -344,7 +347,7 @@ class YldMeMarkdownHandler(YldMeHandler):
             'mime_type' : 'text/markdown',
             'file_ext'  : '.md',
             'pygment'   : 'default',
-            'img'       : random.randint(2,10),
+            'img'       : random_waifu(),
             'styles'    : self.application.styles,
         })
 
