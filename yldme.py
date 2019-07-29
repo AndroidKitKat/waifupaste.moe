@@ -90,7 +90,7 @@ def determine_text_format(file_data, file_mime='text/plain', file_ext='.txt', st
 
     if file_mime == 'text/plain':
         try:
-            yaml_data = yaml.load(file_data)
+            yaml_data = yaml.safe_load(file_data)
             file_mime = 'text/x-yaml'
             file_ext  = '.yaml'
         except yaml.parser.ParserError:
