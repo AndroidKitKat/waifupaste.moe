@@ -91,7 +91,7 @@ def determine_text_format(file_data, file_mime='text/plain', file_ext='.txt', st
     if file_mime == 'text/plain':
         try:
             yaml_data = yaml.safe_load(file_data)
-            if not isinstance(yaml_data, list) or not isinstance(yaml_data, dict):
+            if not isinstance(yaml_data, list) and not isinstance(yaml_data, dict):
                 yaml_data = None
             else:
                 file_mime = 'text/x-yaml'
