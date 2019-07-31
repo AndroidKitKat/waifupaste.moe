@@ -44,7 +44,7 @@ AUTHORIZED_USERS = {}
 
 def load_authorized_users():
     with open('tokens.yaml', 'r') as token_file:
-        tokens = yaml.load_all(token_file, Loader=yaml.FullLoader)
+        tokens = yaml.load_all(token_file)
         for token in tokens:
             for k, v in token.items():
                 AUTHORIZED_USERS[k] = v
@@ -253,11 +253,12 @@ class YldMeHandler(tornado.web.RequestHandler):
             })
 
     def post(self, type=None, imageJpeg=False):
+        self.application.logger.info(self.request.headers)
         try:
             b_poster = self.request.headers['Authorization']
         except:
             self.application.logger.warning('Attempt w/o Authorization Header')
-            self.write('Access denied. If you would like to use WaifuPaste, email the admin')
+            self.write('Access denied. If you would like to use WaifuPaste, email the admin.\n')
             return
         poster = re.sub(r'(Bearer )(.*)', r'\g<2>', b_poster)
         #check to see if user is valid
@@ -265,7 +266,7 @@ class YldMeHandler(tornado.web.RequestHandler):
             self.application.logger.info('valid user: {}'.format(list(AUTHORIZED_USERS.keys())[list(AUTHORIZED_USERS.values()).index(poster)]))
         else:
             self.application.logger.warning('Invalid user detected using key: {}'.format(poster))
-            self.write('Access denied. If you would like to use WaifuPaste, email the admin')
+            self.write('Access denied. If you would like to use WaifuPaste, email the admin.\n')
             return
         if imageJpeg:
             type = 'paste'

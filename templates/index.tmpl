@@ -1,128 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="">
-	<meta name="author" content="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-	<title>WaifuPaste</title>
+    <title>WaifuPaste</title>
 
-	<!-- Bootstrap core CSS -->
+    <!-- Bootstrap core CSS -->
     <!-- Latest compiled and minified CSS -->
 
-   <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
     <link rel="icon" href="https//waifupaste.moe/raw/favicon.png">
     <link href="/assets/css/bootstrap.css/" rel="stylesheet">
-	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!--[if lt IE 9]>
-	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
 
+    <style>
+        body {
+            margin: 10px;
+            background-image: url("assets/imgs/texture.png");
+        }
+    </style>
+</head>
+<body>
+<div class="container">
 
-	<style>
-	body {
-	    margin: 10px;
-        background-image: url("assets/imgs/texture.png");
-	}
-	</style>
-    </head>
-    <body>
-	<div class="container">
+    <div class="row">
+        <div class="page-header">
+            <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">WaifuPaste</a></h1>
+        </div>
+    </div>
 
-	    <div class="row">
-		<div class="page-header">
-		    <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">WaifuPaste</a></h1>
-		</div>
-	    </div>
-
-	    <div class="row">
-		<div class="col-md-6">
-		    <h2>Shorten URL</h2>
-		    <pre>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Shorten URL</h2>
+            <pre>
 curl -d "$URL" https://waifupaste.moe/url
 </pre>
-		</div>
-		<div class="col-md-6">
-		    <h2>&#8203;</h2>
-		    <div class="input-group">
-			<input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
-			<span class="input-group-btn">
-			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()" title="Get shortened URL">
+        </div>
+        <div class="col-md-6">
+            <h2>&#8203;</h2>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
+                <span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()"
+                        title="Get shortened URL">
 				<i class="fa fa-arrow-right" id="URL_button_icon"></i>
 			    </button>
 			</span>
-		    </div>
-		</div>
-	    </div>
+            </div>
+        </div>
+    </div>
 
-	    <div class="row">
-		<div class="col-md-6">
-		    <h2>Paste File</h2>
-		    <pre>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Paste File</h2>
+            <pre>
 curl --data-binary @- https://waifupaste.moe/paste < $TEXT
 </pre>
-		</div>
-		<div class="col-md-6">
-		    <h2>&#8203;</h2>
-		    <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
-		    <div class="input-group">
+        </div>
+        <div class="col-md-6">
+            <h2>&#8203;</h2>
+<input type="button" id="btnFileUpload" value="Select File" />
+<span id="spnFilePath"></span>
+<input type="file" id="FileSelect" style="display: none" />
+<input type="button" id="btnFileSubmit" value="Upload file" />
+            <script type="text/javascript">
+                window.onload = function () {
+                    var formData = new FormData()
+                    var fileSelect = document.getElementById("FileSelect");
+                    var filePath = document.getElementById("spnFilePath");
+                    var uploadButton = document.getElementById("btnFileUpload");
+                    var uploadSubmit = document.getElementById("btnFileSubmit");
+                    var checkUploaded = false;
+                    uploadButton.onclick = function () {
+                        fileSelect.click();
+                    };
+                    fileSelect.onchange = function () {
+                        var fileName = fileSelect.value.split('\\')[fileSelect.value.split('\\').length - 2];
+                        filePath.innerHTML = "<b>Selected File: </b>" + fileName;
+                        checkUploaded = true;
+                    };
+                    uploadSubmit.onclick = function() {
+                        if (checkUploaded) {
+                            var user_token = document.getElementById('user_token').value;
+                        } else {
+                            alert("You did not select a file!")
+                        }
+                    };
+                };
+            </script>
+<!--
+            <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
+                <div class="input-group">
             <span class="btn btn-default btn-file input-group-addon">
                 Browse <input type="file" name="source" ="form-control" id="file_to_paste">
             </span>
 
-            <input type="text" class="form-control" placeholder="File to Upload" id="selected_file" readonly>
+                    <input type="text" class="form-control" placeholder="File to Upload" id="selected_file" readonly>
 
 
-			<span class="input-group-btn">
+                    <span class="input-group-btn">
 			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste File">
 				<i class="fa fa-upload" id="file_button_icon"></i>
 			    </button>
 			</span>
-		    </div>
-		    </form>
-		</div>
-	    </div>
+                </div>
+            </form>-->
+        </div>
+    </div>
 
-	    <div class="row">
-		<div class="col-md-6">
-		    <h2>Password</h2>
-            <input type="password" class="form-control" placeholder="Given to you by the admin, required to upload." id=user_password>
-		</div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Password</h2>
+            <input type="password" class="form-control" placeholder="Given to you by the admin, required to upload."
+                   id=user_token>
+        </div>
 
-		</div>
-	    </div>
-	    <div class="row">
-		<hr/>
+    </div>
+</div>
+<div class="row">
+    <hr/>
 
-        <img src="assets/imgs/qts/{{ img }}.png" style="position: fixed; right: 20px; bottom:0px; z-index: -1000; opacity: 0.7">
+    <img src="assets/imgs/qts/{{ img }}.png"
+         style="position: fixed; right: 20px; bottom:0px; z-index: -1000; opacity: 0.7">
 
-		<footer class="text-center">
-		    <p class="text-muted">
-		    <small>
-			Built using
-			<a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
-			<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
-			<a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
-			<a href="http://www.python.org/">Python</a>. Read the 
-            <a href="https://waifupaste.moe/md/faq">FAQ</a>.
-		    </small>
-		    </p>
-		</footer>
-	    </div>
+    <footer class="text-center">
+        <p class="text-muted">
+            <small>
+                Built using
+                <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+                <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
+                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
+                <a href="http://www.python.org/">Python</a>. Read the
+                <a href="https://waifupaste.moe/md/faq">FAQ</a>.
+            </small>
+        </p>
+    </footer>
+</div>
 
-	</div> <!-- /container -->
+</div> <!-- /container -->
 
-	<!-- Bootstrap core JavaScript
-	================================================== -->
-	<!-- Placed at the end of the document so the pages load faster -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
-	<!-- Code for using tool in browser -->
-	<script src="/assets/js/index_interactive.js"></script>
-    </body>
+<!-- Code for using tool in browser -->
+<script src="/assets/js/index_interactive.js"></script>
+</body>
 </html>
