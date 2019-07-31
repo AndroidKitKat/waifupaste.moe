@@ -1,3 +1,6 @@
 uploads
 *.pyc
 tokens.yaml
+scratch/*
+scratch
+.idea/
