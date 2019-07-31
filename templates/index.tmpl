@@ -12,9 +12,9 @@
 	<!-- Bootstrap core CSS -->
     <!-- Latest compiled and minified CSS -->
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-
-<!--<link href="/assets/css/bootstrap-theme.css/" rel="stylesheet">-->
+   <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
+    <link rel="icon" href="https//waifupaste.moe/raw/favicon.png">
+    <link href="/assets/css/bootstrap.css/" rel="stylesheet">
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -27,6 +27,7 @@
 	<style>
 	body {
 	    margin: 10px;
+        background-image: url("assets/imgs/texture.png");
 	}
 	</style>
     </head>
@@ -70,7 +71,13 @@ curl --data-binary @- https://waifupaste.moe/paste < $TEXT
 		    <h2>&#8203;</h2>
 		    <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
 		    <div class="input-group">
-			<input type="file" name="source" class="form-control" placeholder="File to Upload" id="file_to_paste">
+            <span class="btn btn-default btn-file input-group-addon">
+                Browse <input type="file" name="source" ="form-control" id="file_to_paste">
+            </span>
+
+            <input type="text" class="form-control" placeholder="File to Upload" id="selected_file" readonly>
+
+
 			<span class="input-group-btn">
 			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste File">
 				<i class="fa fa-upload" id="file_button_icon"></i>
@@ -82,9 +89,17 @@ curl --data-binary @- https://waifupaste.moe/paste < $TEXT
 	    </div>
 
 	    <div class="row">
+		<div class="col-md-6">
+		    <h2>Password</h2>
+            <input type="password" class="form-control" placeholder="Given to you by the admin, required to upload." id=user_password>
+		</div>
+
+		</div>
+	    </div>
+	    <div class="row">
 		<hr/>
 
-        <img src="assets/img/{{ img }}.png" style="position: absolute; right: 20px; bottom:0px; z-index: -1000; opacity: 0.7">
+        <img src="assets/imgs/qts/{{ img }}.png" style="position: fixed; right: 20px; bottom:0px; z-index: -1000; opacity: 0.7">
 
 		<footer class="text-center">
 		    <p class="text-muted">
@@ -93,8 +108,7 @@ curl --data-binary @- https://waifupaste.moe/paste < $TEXT
 			<a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
 			<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
 			<a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
-			<a href="http://www.python.org/">Python</a>. This is a fork of 
-            <a href="https://gitlab.com/pbui/yldme/">YldMe</a>. Read the 
+			<a href="http://www.python.org/">Python</a>. Read the 
             <a href="https://waifupaste.moe/md/faq">FAQ</a>.
 		    </small>
 		    </p>
