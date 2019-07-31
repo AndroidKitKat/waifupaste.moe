@@ -69,40 +69,13 @@ curl --data-binary @- -H "Authorization: Bearer $WP_TOKEN" https://waifupaste.mo
         </div>
         <div class="col-md-6">
             <h2>&#8203;</h2>
-<input type="button" id="btnFileUpload" value="Select File" />
-<span id="spnFilePath"></span>
-<input type="file" id="FileSelect" style="display: none" />
-<input type="button" id="btnFileSubmit" value="Upload file" />
-            <script type="text/javascript">
-                window.onload = function () {
-                    var formData = new FormData()
-                    var fileSelect = document.getElementById("FileSelect");
-                    var filePath = document.getElementById("spnFilePath");
-                    var uploadButton = document.getElementById("btnFileUpload");
-                    var uploadSubmit = document.getElementById("btnFileSubmit");
-                    var checkUploaded = false;
-                    uploadButton.onclick = function () {
-                        fileSelect.click();
-                    };
-                    fileSelect.onchange = function () {
-                        var fileName = fileSelect.value.split('\\')[fileSelect.value.split('\\').length - 2];
-                        filePath.innerHTML = "<b>Selected File: </b>" + fileName;
-                        checkUploaded = true;
-                    };
-                    uploadSubmit.onclick = function() {
-                        if (checkUploaded) {
-                            <!-- Basically take the file object, or however files work in JS, and make a POST to /paste
-                            including the user_token as a header: "Authorization: Bearer $user_token", which is the only
-                            way for the upload to go through.
-                            -->
-                            var user_token = document.getElementById('user_token').value;
-                        } else {
-                            alert("You did not select a file!")
-                        }
-                    };
-                };
-            </script>
-
+            <form action="/paste" method="POST" onsubmit="return upload();">
+                <fieldset>
+                    <legend>Browse</legend>
+                    <input type="file" name="paste" id="paste">
+                    <input type="submit" value="Upload">
+                </fieldset>
+            </form>
             <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
                 <div class="input-group">
             <span class="btn btn-default btn-file input-group-addon">
@@ -153,6 +126,15 @@ curl --data-binary @- -H "Authorization: Bearer $WP_TOKEN" https://waifupaste.mo
 
 </div> <!-- /container -->
 
+<!-- J-J-J-J-J-JANK Uploading-->
+<script type="text/javascript">
+    var upload = function() {
+        var xhr = XMLHttpRequest();
+        var user_token = document.getElementById("user_token").value;
+        var paste = document.getElementById("paste");
+        xhr.setRequestHeader("Authorization", "Bearer " + user_token)
+        };
+    </script>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
