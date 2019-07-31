@@ -14,7 +14,7 @@ import subprocess
 import sys
 import time
 import yaml
-
+import re
 import tornado.ioloop
 import tornado.options
 import tornado.web
@@ -38,7 +38,17 @@ MIME_TYPES = {
     'text/plain': '.txt',
 }
 
+AUTHORIZED_USERS = {}
+
 # Utilities
+
+def load_authorized_users():
+    with open('tokens.yaml', 'r') as token_file:
+        tokens = yaml.load_all(token_file, Loader=yaml.FullLoader)
+        for token in tokens:
+            for k, v in token.items():
+                AUTHORIZED_USERS[k] = v
+
 
 def random_waifu():
     return random.randint(1, NUMBER_OF_WAIFUS)
@@ -243,6 +253,20 @@ class YldMeHandler(tornado.web.RequestHandler):
             })
 
     def post(self, type=None, imageJpeg=False):
+        try:
+            b_poster = self.request.headers['Authorization']
+        except:
+            self.application.logger.warning('Attempt w/o Authorization Header')
+            self.write('Access denied. If you would like to use WaifuPaste, email the admin')
+            return
+        poster = re.sub(r'(Bearer )(.*)', r'\g<2>', b_poster)
+        #check to see if user is valid
+        if poster in AUTHORIZED_USERS.values():
+            self.application.logger.info('valid user: {}'.format(list(AUTHORIZED_USERS.keys())[list(AUTHORIZED_USERS.values()).index(poster)]))
+        else:
+            self.application.logger.warning('Invalid user detected using key: {}'.format(poster))
+            self.write('Access denied. If you would like to use WaifuPaste, email the admin')
+            return
         if imageJpeg:
             type = 'paste'
 
@@ -302,10 +326,10 @@ class YldMeHandler(tornado.web.RequestHandler):
                 self.write(raw_url)
             else:
                 self.write(preview_url + '\n')
+        self.application.logger.info('Uploaded: {}'.format(raw_url))
 
     def put(self, type=None):
         if type == 'image.jpeg' or type == 'image.jpg':
-            self.application.logger.info('image.jpeg coming through')
             type == 'paste'
             return self.post(type, True)
         else:
@@ -454,7 +478,7 @@ if __name__ == '__main__':
 
     options = tornado.options.options.as_dict()
     yldme   = YldMeApplication(**options)
-
+    load_authorized_users()
     try:
         import markdown
         import markdown.extensions.codehilite
