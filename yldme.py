@@ -253,7 +253,7 @@ class YldMeHandler(tornado.web.RequestHandler):
             })
 
     def post(self, type=None, imageJpeg=False):
-        self.application.logger.info(self.request.headers)
+        #self.application.logger.info(self.request.headers)
         try:
             b_poster = self.request.headers['Authorization']
         except:
