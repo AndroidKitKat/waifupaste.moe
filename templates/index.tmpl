@@ -69,8 +69,8 @@ curl --data-binary @- -H "Authorization: Bearer $WP_TOKEN" https://waifupaste.mo
         </div>
         <div class="col-md-6">
             <h2>&#8203;</h2>
-            <form id="beta-send" action="/paste" method="POST" enctype="multipart/form-data">
-                <input name="source" ="form-control" type="file">
+            <form id="beta-send" action="/paste" enctype="multipart/form-data">
+                <input name="source" class="form-control" type="file">
                 <input type="submit" value="Upload">
             </form><!--
             <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
@@ -125,14 +125,16 @@ curl --data-binary @- -H "Authorization: Bearer $WP_TOKEN" https://waifupaste.mo
 
 <!-- J-J-J-J-J-JANK Uploading-->
 <script type="text/javascript">
-    var form = document.getElementById('beta-send');
+    var form = document.getElementById('beta-send').addEventListener('click',function (event) {
+        event.preventDefault();
+    });
     form.onsubmit = function() {
         var formData = new FormData(form);
         formData.append('file',file);
         var xhr = new XMLHttpRequest();
+        xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
         xhr.open('POST', form.getAttribute('action'), true);
         <!-- Why you no set-->
-        xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
         xhr.send(formData);
         return false;
         }
