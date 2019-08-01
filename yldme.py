@@ -96,7 +96,7 @@ def determine_text_format(file_data, file_mime='text/plain', file_ext='.txt', st
             else:
                 file_mime = 'text/x-yaml'
                 file_ext  = '.yaml'
-        except yaml.parser.ParserError:
+        except (yaml.parser.ParserError, yaml.scanner.ScannerError):
             pass
 
         try:
