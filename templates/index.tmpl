@@ -69,12 +69,9 @@ curl --data-binary @- -H "Authorization: Bearer $WP_TOKEN" https://waifupaste.mo
         </div>
         <div class="col-md-6">
             <h2>&#8203;</h2>
-            <form action="/paste" method="POST" onsubmit="return upload();">
-                <fieldset>
-                    <legend>Browse</legend>
-                    <input type="file" name="paste" id="paste">
-                    <input type="submit" value="Upload">
-                </fieldset>
+            <form id="beta-send" action="/paste" method="POST" enctype="multipart/form-data">
+                <input name="source" ="form-control" type="file">
+                <input type="submit" value="Upload">
             </form>
             <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
                 <div class="input-group">
@@ -128,13 +125,18 @@ curl --data-binary @- -H "Authorization: Bearer $WP_TOKEN" https://waifupaste.mo
 
 <!-- J-J-J-J-J-JANK Uploading-->
 <script type="text/javascript">
-    var upload = function() {
-        var xhr = XMLHttpRequest();
-        var user_token = document.getElementById("user_token").value;
-        var paste = document.getElementById("paste");
-        xhr.setRequestHeader("Authorization", "Bearer " + user_token)
-        };
-    </script>
+    var form = document.getElementById('beta-send');
+    form.onsubmit = function() {
+        var formData = new FormData(form);
+        formData.append('file',file);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', form.getAttribute('action'), true);
+        <!-- Why you no set-->
+        xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+        xhr.send(formData);
+        return false;
+        }
+</script>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
