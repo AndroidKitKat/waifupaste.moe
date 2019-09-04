@@ -427,7 +427,7 @@ class YldMeApplication(tornado.web.Application):
         self.config_path = os.path.join(self.config_dir, 'config.yaml')
 
         if os.path.exists(self.config_path):
-            config = yaml.load(open(self.config_path))
+            config = yaml.safe_load(open(self.config_path))
         else:
             config = {}
 
