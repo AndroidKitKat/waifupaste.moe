@@ -4,7 +4,6 @@ import collections
 import glob
 import hashlib
 import logging
-import mimetypes
 import os
 import random
 import socket
@@ -14,7 +13,7 @@ import subprocess
 import sys
 import time
 import yaml
-import re
+import mimetypes
 import tornado.ioloop
 import tornado.options
 import tornado.web
@@ -30,7 +29,7 @@ import pygments.util
 YLDME_ADDRESS   = '127.0.0.1'
 YLDME_PORT      = 9515
 TRUE_STRINGS    = ('1', 'true', 'on', 'yes')
-NUMBER_OF_WAIFUS =  len(os.listdir('assets/imgs/qts'))
+
 MIME_TYPES = {
     'image/jpeg': '.jpg',
     'image/png' : '.png',
@@ -38,20 +37,8 @@ MIME_TYPES = {
     'text/plain': '.txt',
 }
 
-AUTHORIZED_USERS = {}
 
 # Utilities
-
-def load_authorized_users():
-    with open('tokens.yaml', 'r') as token_file:
-        tokens = yaml.load_all(token_file)
-        for token in tokens:
-            for k, v in token.items():
-                AUTHORIZED_USERS[k] = v
-
-
-def random_waifu():
-    return random.randint(1, NUMBER_OF_WAIFUS)
 
 def make_parent_directories(path):
     dirname = os.path.dirname(path)
@@ -85,9 +72,8 @@ def determine_mimetype(path):
 
     return result.decode('utf8').split(':', 1)[-1].strip()
 
-
 def guess_extension(mime_type):
-    return (MIME_TYPES.get(mime_type)
+    return(MIME_TYPES.get(mime_type)
             or mimetypes.guess_extension(mime_type)
             or '.txt')
 
@@ -208,13 +194,10 @@ class YldMeHandler(tornado.web.RequestHandler):
             raise tornado.web.HTTPError(410, 'Upload has been removed')
 
         file_mime = determine_mimetype(file_path)
-        file_ext  = guess_extension(file_mime)
+        file_ext = guess_extension(file_mime)
 
         if self.get_argument('raw', '').lower() in TRUE_STRINGS:
-            if "text/" in file_mime: 
-                self.set_header('Content-Type', 'text/plain')
-            else:
-                self.set_header('Content-Type', file_mime)
+            self.set_header('Content-Type', file_mime)
             self.write(file_data)
             return
 
@@ -232,7 +215,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         elif 'image/' in file_mime:
             file_html = '<div class="thumbnail text-center"><img src="/raw/{}" class="img-responsive"></div>'.format(name)
         elif 'video/' in file_mime:
-            file_html = '<div class="thumbnail text-center"><video style="width:100%;height:100%;" controls><source src="/raw/{}" type="{}" class="embed-responsive"></video></div>'.format(name, file_mime)
+            file_html = '<div class="thumbnail text-center"><video style="height:100%;width:100%;"controls><source src="/raw/{}" type="{}" class="embed-responsive"></video></div>'.format(name, file_mime)
         else:
             file_html = '''
 <div class="btn-toolbar" style="text-align: center">
@@ -246,37 +229,21 @@ class YldMeHandler(tornado.web.RequestHandler):
             'file_ext'  : file_ext,
             'mime_type' : file_mime,
             'pygment'   : style,
-            'img'       : random_waifu(),
             'styles'    : self.application.styles,
+            'img'       : random.randint(2,10),
         })
 
     def _index(self):
         self.render('index.tmpl', **{
-            'img': random_waifu()
+            'img':random.randint(2,10)
             })
 
-    def post(self, type=None, imageJpeg=False):
-        #self.application.logger.info(self.request.headers)
-        #try:
-        #    b_poster = self.request.headers['Authorization']
-        #except:
-        #    self.application.logger.warning('Attempt w/o Authorization Header')
-        #    self.write('Access denied. If you would like to use WaifuPaste, email the admin.\n')
-        #    return
-        #poster = re.sub(r'(Bearer )(.*)', r'\g<2>', b_poster)
-        ##check to see if user is valid
-        #if poster in AUTHORIZED_USERS.values():
-        #    self.application.logger.info('valid user: {}'.format(list(AUTHORIZED_USERS.keys())[list(AUTHORIZED_USERS.values()).index(poster)]))
-        #else:
-        #    self.application.logger.warning('Invalid user detected using key: {}'.format(poster))
-        #    self.write('Access denied. If you would like to use WaifuPaste, email the admin.\n')
-        #    return
-        if imageJpeg:
-            type = 'paste'
-
+    def post(self, type=None, palaver=False):
         if type == 'image.jpeg' or type == 'image.jpg':
-            imgJpeg = True
-            type = 'paste'
+            type == 'paste'
+    
+        if palaver is True:
+            self.application.logger.info('here comes palaver in post')
 
         if 'source' in self.request.files:
             use_template = True
@@ -284,6 +251,8 @@ class YldMeHandler(tornado.web.RequestHandler):
         else:
             use_template = False
             value        = self.request.body
+
+        #pesky palaver
 
         if type == 'url':
             value_hash = value
@@ -293,6 +262,7 @@ class YldMeHandler(tornado.web.RequestHandler):
             raise tornado.web.HTTPError(405, 'Could not post to {}'.format(type))
 
         data  = self.application.database.lookup(value_hash)
+        
         tries = 0
         while data is None and tries < self.application.max_tries:
             tries = tries + 1
@@ -302,6 +272,7 @@ class YldMeHandler(tornado.web.RequestHandler):
                 self.application.database.add(name, value_hash, type)
                 if type != 'url':
                     path = os.path.join(self.application.uploads_dir, name)
+
                     with open(path, 'wb+') as fs:
                         fs.write(value)
                 data = self.application.database.get(name)
@@ -317,28 +288,24 @@ class YldMeHandler(tornado.web.RequestHandler):
         if type == 'paste':
             file_path = os.path.join(self.application.uploads_dir, data.name)
             file_mime = determine_mimetype(file_path)
-            file_ext  = guess_extension(file_mime)
-            raw_url   = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
-            self.application.logger.info('Posted: {}'.format(raw_url))
+            file_ext = guess_extension(file_mime)
+            raw_url = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
 
         if use_template:
-            self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url, **{'img':random_waifu()})
+            self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url, **{'img':random.randint(2,10)})
         else:
-            self.set_header('Content-Type', 'text/plain')
-            if imageJpeg:
-                self.write(raw_url)
-            elif self.get_argument('raw', '').lower() in TRUE_STRINGS:
+            self.set_header('Content-Type','text/plain')
+            self.application.logger.info(self.get_argument('raw','').lower())
+            if palaver or self.get_argument('raw','').lower() in TRUE_STRINGS:
                 self.write(raw_url)
             else:
                 self.write(preview_url + '\n')
 
     def put(self, type=None):
         if type == 'image.jpeg' or type == 'image.jpg':
-            type == 'paste'
-            return self.post(type, True)
-        else:
-            return self.post(type)
-
+            self.application.logger.info('here comes palaver in put')
+            type = 'paste'
+        return self.post(type,True)
 
 class YldMeMarkdownHandler(YldMeHandler):
     def get(self, name=None):
@@ -375,20 +342,18 @@ class YldMeMarkdownHandler(YldMeHandler):
             'mime_type' : 'text/markdown',
             'file_ext'  : '.md',
             'pygment'   : 'default',
-            'img'       : random_waifu(),
             'styles'    : self.application.styles,
+            'img'       : random.randint(2,10),
         })
-
 
 class YldMeRawHandler(YldMeHandler):
     def get(self, name=None):
         self.request.arguments['raw'] = '1'
+        # self.application.logger.info(self.type)
         return YldMeHandler.get(self, name)
-
-    def post(self, type=None):
-        self.request.arguments['raw'] = '1'
-        return YldMeHandler.post(self, type)
-
+        # self.request.arguments['raw'] = '1'
+        # return YldMeHandler.get(self, name)
+        # self.redirect('/{}?raw=1'.format(name or ''))
 
 # Application
 
@@ -408,19 +373,16 @@ class YldMeApplication(tornado.web.Application):
         self.database = Database(os.path.join(self.config_dir, 'db'), self.presets)
         self.styles   = [os.path.basename(path)[:-4] for path in sorted(glob.glob(os.path.join(self.styles_dir, '*.css')))]
 
-        self.logger.info('Port:                    %d', self.port)
-        self.logger.info('Address:                 %s', self.address)
 
         self.add_handlers('.*', [
-                (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': self.assets_dir}),
-                (r'.*/md/(.*)'    , YldMeMarkdownHandler),
-                (r'.*/raw/(.*)'   , YldMeRawHandler),
-                (r'.*/(.*)'       , YldMeHandler),
-        ])
+            (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': self.assets_dir}),
+            (r'.*/md/(.*)'    , YldMeMarkdownHandler),
+            (r'.*/raw/(.*)'   , YldMeRawHandler),
+            (r'.*/(.*)'       , YldMeHandler),
+            ])
 
     def generate_name(self):
-        count = self.database.count() or 1
-        return integer_to_identifier(random.randrange(count*10), self.alphabet)
+        return integer_to_identifier(random.randrange(self.database.count()*10), self.alphabet)
 
     def run(self):
         try:
@@ -428,7 +390,6 @@ class YldMeApplication(tornado.web.Application):
         except socket.error as e:
             self.logger.fatal('Unable to listen on {}:{} = {}'.format(self.address, self.port, e))
             sys.exit(1)
-
         self.ioloop.start()
 
     def load_configuration(self, config_dir=None):
@@ -450,6 +411,8 @@ class YldMeApplication(tornado.web.Application):
         self.max_tries = config.get('max_tries', 10)
 
         self.logger.info('URL:                     %s', self.url)
+        self.logger.info('Port:                    %d', self.port)
+        self.logger.info('Address:                 %s', self.address)
         self.logger.info('Alphabet:                %s', self.alphabet)
         self.logger.info('Max Tries:               %d', self.max_tries)
 
@@ -462,6 +425,7 @@ class YldMeApplication(tornado.web.Application):
         self.logger.info('Styles Directory:        %s', self.styles_dir)
         self.logger.info('Uploads Directory:       %s', self.uploads_dir)
         self.logger.info('Templates Directory:     %s', self.templates_dir)
+        #add faq
 
         if not os.path.isdir(self.uploads_dir):
             os.makedirs(self.uploads_dir)
@@ -479,16 +443,13 @@ if __name__ == '__main__':
     tornado.options.define('debug', default=False, help='Enable debugging mode.')
     tornado.options.define('templates', default='templates', help='Path to templates')
     tornado.options.parse_command_line()
-
     options = tornado.options.options.as_dict()
-    yldme   = YldMeApplication(**options)
-    load_authorized_users()
     try:
         import markdown
         import markdown.extensions.codehilite
     except ImportError:
-        yldme.logger.warn('Markdown module missing!')
-
+        yldme.logger.warn('Shit is missing dog')
+    yldme   = YldMeApplication(**options)
     yldme.run()
 
 # vim: sts=4 sw=4 ts=8 expandtab ft=python

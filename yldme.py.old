@@ -211,15 +211,14 @@ class YldMeHandler(tornado.web.RequestHandler):
         file_ext  = guess_extension(file_mime)
 
         if self.get_argument('raw', '').lower() in TRUE_STRINGS:
-            if "text/" in file_mime: 
-                self.set_header('Content-Type', 'text/plain')
-            else:
-                self.set_header('Content-Type', file_mime)
+            self.set_header('Content-Type', file_mime)
             self.write(file_data)
             return
 
         style   = self.get_argument('style', 'default')
         linenos = self.get_argument('linenos', False)
+        if file_mime is 'text/html' or '/javascript' in file_mime or 'php' in file_mime:
+            file_mime = 'text/plain'
 
         if 'text/' in file_mime or 'message/' in file_mime:
             try:
@@ -319,7 +318,6 @@ class YldMeHandler(tornado.web.RequestHandler):
             file_mime = determine_mimetype(file_path)
             file_ext  = guess_extension(file_mime)
             raw_url   = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
-            self.application.logger.info('Posted: {}'.format(raw_url))
 
         if use_template:
             self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url, **{'img':random_waifu()})
@@ -331,6 +329,7 @@ class YldMeHandler(tornado.web.RequestHandler):
                 self.write(raw_url)
             else:
                 self.write(preview_url + '\n')
+        self.application.logger.info('Uploaded: {}'.format(raw_url))
 
     def put(self, type=None):
         if type == 'image.jpeg' or type == 'image.jpg':

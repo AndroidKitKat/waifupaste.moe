@@ -39,6 +39,10 @@
         </div>
     </div>
 
+    <div class="isa_warning">
+        <i class = "fa fa-warning"></i>
+As of August 1, 2019, public uploading has been restored. Thanks for your cooperation. 
+        </div>
     <div class="row">
         <div class="col-md-6">
             <h2>Shorten URL</h2>
@@ -59,20 +63,15 @@ curl -d "$URL" https://waifupaste.moe/url
             </div>
         </div>
     </div>
-
     <div class="row">
         <div class="col-md-6">
             <h2>Paste File</h2>
             <pre>
-curl --data-binary @- -H "Authorization: Bearer $WP_TOKEN" https://waifupaste.moe/paste < $TEXT
+curl --data-binary @- https://waifupaste.moe/paste < $FILE
 </pre>
         </div>
         <div class="col-md-6">
             <h2>&#8203;</h2>
-            <form id="beta-send" action="/paste" enctype="multipart/form-data">
-                <input name="source" class="form-control" type="file">
-                <input type="submit" value="Upload">
-            </form><!--
             <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
                 <div class="input-group">
             <span class="btn btn-default btn-file input-group-addon">
@@ -88,21 +87,12 @@ curl --data-binary @- -H "Authorization: Bearer $WP_TOKEN" https://waifupaste.mo
 			    </button>
 			</span>
                 </div>
-            </form>-->
+            </form>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <h2>Password</h2>
-            <input type="password" class="form-control" placeholder="Given to you by the admin, required to upload."
-                   id=user_token>
-        </div>
 
     </div>
 </div>
-<div class="row">
-    <hr/>
 
     <img src="assets/imgs/qts/{{ img }}.png"
          style="position: fixed; right: 20px; bottom:0px; z-index: -1000; opacity: 0.7">
@@ -119,7 +109,6 @@ curl --data-binary @- -H "Authorization: Bearer $WP_TOKEN" https://waifupaste.mo
             </small>
         </p>
     </footer>
-</div>
 
 </div> <!-- /container -->
 
