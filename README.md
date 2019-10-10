@@ -2,7 +2,7 @@ Waifupaste.moe is a website that allows you to to shorten urls, share images, or
 
 Example uses of waifupaste:
 
-- [waifupaste.moe/n](waifupaste.moe/n) links to google.com
-- [waifupaste.moe/si](waifupaste.moe/si) links to a picture of an anime girl
-- [waifupaste.moe/eu](waifupaste.moe/eu) links to a screenshot of irc chat
-- [waifupaste.moe/aHg](waifupaste.moe/aHg) links to a pastebin of some C code
+- [waifupaste.moe/n](https://waifupaste.moe/n) links to google.com
+- [waifupaste.moe/si](https://waifupaste.moe/si) links to a picture of an anime girl
+- [waifupaste.moe/eu](https://waifupaste.moe/eu) links to a screenshot of irc chat
+- [waifupaste.moe/aHg](https://waifupaste.moe/aHg) links to a pastebin of some C code
