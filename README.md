@@ -1,4 +1,4 @@
-Waifupaste.moe is a website that allows you to to shorten urls, share images, or paste the plain text of a file into a shortened url for easy sharing and collaboration with others. There are also cute anime girls in the website. My waifu is on their. Yours might be too. Find out now at waifupaste.moe!
+Waifupaste.moe is a website that allows you to to shorten urls, share images, or paste the plain text of a file into a shortened url for easy sharing and collaboration with others. There are also cute anime girls in the website. My waifu is on there. Yours might be too. Find out now at waifupaste.moe!
 
 Example uses of waifupaste:
 
