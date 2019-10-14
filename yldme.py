@@ -318,9 +318,21 @@ class YldMeHandler(tornado.web.RequestHandler):
             file_path = os.path.join(self.application.uploads_dir, data.name)
             file_mime = determine_mimetype(file_path)
             file_ext  = guess_extension(file_mime)
+            # raw_url   = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
+            # self.application.logger.info('Posted: {}'.format(raw_url))
+
+            # convert mov to mp4
+            if 'quicktime' in file_mime:
+                os.rename('/home/akk/www/uploads/' + data.name, '/home/akk/www/uploads/' + data.name + '.temp')
+                convert = ['ffmpeg', '-i', '/home/akk/www/uploads/' + data.name + '.temp', '-f', 'mp4', '/home/akk/www/uploads/' + data.name]
+                # move = ['mv', '/home/akk/www/uploads/out.mp4', '/home/akk/www/uploads/' + data.name]
+                reee = tornado.process.Subprocess(convert)
+                # os.rename('/home/akk/www/uploads/' + data.name + '.mp4', '/home/akk/www/uploads' + data.name)
+                file_mime = 'video/mp4'
+                file_ext = '.mp4'
+
             raw_url   = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
             self.application.logger.info('Posted: {}'.format(raw_url))
-
         if use_template:
             self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url, **{'img':random_waifu()})
         else:
