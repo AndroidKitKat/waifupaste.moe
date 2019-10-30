@@ -49,19 +49,13 @@ function shorten_url() {
     });
 }
 
+// Update text input associated with file input based on the following:
+//
+//  https://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3
 $(function() {
   $(document).on('change', ':file', function() {
     var text_input = $(this).parents('.input-group').find(':text'),
-      file_value = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
-    text_input.val(file_value);             
-  }); 
-});
-
-$(function() {
-  $document.on('change',':file', function() {
-    var text_input = $(this).parents('.input-group').find(':text'),
-      file_value = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
+        file_value = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
     text_input.val(file_value);
   });
-
 });
