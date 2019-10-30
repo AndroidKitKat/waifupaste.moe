@@ -112,20 +112,4 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
 
 </div> <!-- /container -->
 
-<!-- J-J-J-J-J-JANK Uploading-->
-<script type="text/javascript">
-    var form = document.getElementById('beta-send').addEventListener('click',function (event) {
-        event.preventDefault();
-    });
-    form.onsubmit = function() {
-        var formData = new FormData(form);
-        formData.append('file',file);
-        var xhr = new XMLHttpRequest();
-        xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
-        xhr.open('POST', form.getAttribute('action'), true);
-        <!-- Why you no set-->
-        xhr.send(formData);
-        return false;
-        }
-</script>
 </html>
