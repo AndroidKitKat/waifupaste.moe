@@ -1094,7 +1094,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "Open Sans", Helvetica, sans-serif;
+  font-family: "Roboto", Helvetica, sans-serif;
   font-size: 13px;
   line-height: 1.42857143;
   color: #555555;
@@ -1196,7 +1196,7 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: "Open Sans", Helvetica, sans-serif;
+  font-family: "Roboto", Helvetica, sans-serif;
   font-weight: bold;
   line-height: 1.1;
   color: #002b5c;
@@ -3539,6 +3539,25 @@ fieldset[disabled] .btn-link:focus {
 }
 .btn-block + .btn-block {
   margin-top: 5px;
+}
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
 }
 input[type="submit"].btn-block,
 input[type="reset"].btn-block,
@@ -6070,7 +6089,7 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, sans-serif;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -6188,7 +6207,7 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, sans-serif;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
