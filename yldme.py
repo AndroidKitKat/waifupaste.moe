@@ -19,6 +19,7 @@ import re
 import tornado.ioloop
 import tornado.options
 import tornado.web
+import datetime
 
 import pygments
 import pygments.lexers
@@ -32,12 +33,15 @@ YLDME_ADDRESS   = '127.0.0.1'
 YLDME_PORT      = 9515
 TRUE_STRINGS    = ('1', 'true', 'on', 'yes')
 NUMBER_OF_WAIFUS =  len(os.listdir('assets/imgs/qts'))
+LOG_FILE = '/home/akk/.config/yldme/log.txt'
 MIME_TYPES = {
     'image/jpeg': '.jpg',
     'image/png' : '.png',
     'video/mp4' : '.mp4',
     'text/plain': '.txt',
 }
+
+
 
 AUTHORIZED_USERS = {}
 
@@ -63,6 +67,12 @@ def load_authorized_users():
 
 def random_waifu():
     return random.randint(1, NUMBER_OF_WAIFUS)
+
+def log_ip(extension, ip):
+    with open(LOG_FILE, 'a') as log_file:
+        log_file.write('Time: {} | URL: {} | IP: {}\n'.format(datetime.datetime.now(), extension, ip))
+        return
+
 
 def make_parent_directories(path):
     dirname = os.path.dirname(path)
@@ -380,6 +390,8 @@ class YldMeHandler(tornado.web.RequestHandler):
 
             raw_url   = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
             self.application.logger.info('Posted: {}'.format(raw_url))
+            log_ip(raw_url, self.request.headers.get('X-Real-Ip', ''))
+
         if use_template:
             self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url, **{'img':random_waifu()})
         else:
