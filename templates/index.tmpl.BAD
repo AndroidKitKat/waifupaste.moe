@@ -41,7 +41,7 @@
 
     <div class="isa_warning">
         <i class = "fa fa-warning"></i>
-<b>Notice:</b> WaifuPaste now logs. If you don't feel like you can upload something without it getting traced back to you, don't upload it. Happy pasting!
+As of August 1, 2019, public uploading has been restored. Thanks for your cooperation. 
         </div>
     <div class="row">
         <div class="col-md-6">
@@ -56,7 +56,7 @@ curl -d "$URL" https://waifupaste.moe/url
                 <input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
                 <span class="input-group-btn">
 			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()"
-                        title="Your URL won't be the only thing that's short now~~">
+                        title="Get shortened URL">
 				<i class="fa fa-arrow-right" id="URL_button_icon"></i>
 			    </button>
 			</span>
@@ -72,8 +72,9 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
         </div>
         <div class="col-md-6">
             <h2>&#8203;</h2>
+<!--            <form action="/paste" class="dropzone" id="fuck-dropzone"></form>-->
             <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
-                <div class="input-group">
+                <div class="fallback">
             <span class="btn btn-default btn-file input-group-addon">
                 Browse <input type="file" name="source" ="form-control" id="file_to_paste">
             </span>
@@ -82,7 +83,7 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
 
 
                     <span class="input-group-btn">
-			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste your file Onii-chan~ <3">
+			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste File">
 				<i class="fa fa-upload" id="file_button_icon"></i>
 			    </button>
 			</span>
@@ -105,17 +106,36 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
                 <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
                 <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
                 <a href="http://www.python.org/">Python</a>. Read the
-                <a href="https://waifupaste.moe/md/faq">FAQ</a>. 
-                <a href="mailto:abuse@waifupaste.moe">Abuse</a>
+                <a href="https://waifupaste.moe/md/faq">FAQ</a>.
             </small>
         </p>
     </footer>
 
 </div> <!-- /container -->
+
+<!-- J-J-J-J-J-JANK Uploading-->
+<script type="text/javascript">
+    var form = document.getElementById('beta-send').addEventListener('click',function (event) {
+        event.preventDefault();
+    });
+    form.onsubmit = function() {
+        var formData = new FormData(form);
+        formData.append('file',file);
+        var xhr = new XMLHttpRequest();
+        xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+        xhr.open('POST', form.getAttribute('action'), true);
+        <!-- Why you no set-->
+        xhr.send(formData);
+        return false;
+        }
+</script>
+<!-- Bootstrap core JavaScript
+================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 <!-- Code for using tool in browser -->
 <script src="/assets/js/index_interactive.js"></script>
+<script src="/assets/js/dropzone.js"></script>
 </body>
 </html>
