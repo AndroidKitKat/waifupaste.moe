@@ -59,3 +59,16 @@ $(function() {
     text_input.val(file_value);
   });
 });
+
+$(function () {
+    const form = $('#paste_file_form')
+
+    form.on ('submit', (e) => {
+	const selectedFile = $ ('#selected_file').val()
+
+	if (!selectedFile) {
+	    e.preventDefault();
+	    alert('You must select a file!')
+	}
+    });
+});
