@@ -72,7 +72,7 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
         </div>
         <div class="col-md-6">
             <h2>&#8203;</h2>
-            <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
+            <form name="myForm" action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
                 <div class="input-group">
             <span class="btn btn-default btn-file input-group-addon">
                 Browse <input type="file" name="source" ="form-control" id="file_to_paste">

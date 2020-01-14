@@ -59,3 +59,7 @@ $(function() {
     text_input.val(file_value);
   });
 });
+
+$(document).ready(function() 
+  { 
+    $('#paste_file_form').on('submit', function(e) { alert('fuck javascript'); return false; } });
