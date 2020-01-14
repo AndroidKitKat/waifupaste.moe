@@ -1,3 +1,5 @@
+$('#paste_file_form').on('submit', (e) => { if ($('#my-file-input').value() === 'bad value') { e.preventDefault(); alert('pls put a file'); } })
+
 // set button to read enter as keypress & to clear success upon typing
 $('#URL_to_copy').keypress(function (e) {
     var key = e.which;
@@ -60,6 +62,14 @@ $(function() {
   });
 });
 
-$(document).ready(function() 
-  { 
-    $('#paste_file_form').on('submit', function(e) { alert('fuck javascript'); return false; } });
+  const form = $ ('#paste_file_form')
+
+form.on ('submit', (e) => {
+  const selectedFile = $ ('#selected_file').val ()
+  
+  console.log ('selected file -->', selectedFile)
+  
+  if (!selectedFile) {
+    e.preventDefault ();
+  }
+})
