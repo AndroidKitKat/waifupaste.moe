@@ -70,6 +70,7 @@ form.on ('submit', (e) => {
   
   if (!selectedFile) {
     e.preventDefault ();
+    alert('You must select a file!')
   }
 });
 }
