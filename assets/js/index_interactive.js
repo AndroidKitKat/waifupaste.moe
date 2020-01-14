@@ -62,6 +62,7 @@ $(function() {
   });
 });
 
+$(function) {
   const form = $ ('#paste_file_form')
 
 form.on ('submit', (e) => {
@@ -72,4 +73,4 @@ form.on ('submit', (e) => {
   if (!selectedFile) {
     e.preventDefault ();
   }
-})
+})}
