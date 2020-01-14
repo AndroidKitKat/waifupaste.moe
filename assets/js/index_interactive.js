@@ -1,5 +1,3 @@
-$('#paste_file_form').on('submit', (e) => { if ($('#my-file-input').value() === 'bad value') { e.preventDefault(); alert('pls put a file'); } })
-
 // set button to read enter as keypress & to clear success upon typing
 $('#URL_to_copy').keypress(function (e) {
     var key = e.which;
@@ -62,7 +60,7 @@ $(function() {
   });
 });
 
-$(function) {
+$(function () {
   const form = $ ('#paste_file_form')
 
 form.on ('submit', (e) => {
@@ -73,4 +71,7 @@ form.on ('submit', (e) => {
   if (!selectedFile) {
     e.preventDefault ();
   }
-})}
+});
+}
+);
+
