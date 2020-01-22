@@ -7,7 +7,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>WaifuPaste - {{ name }}</title>
+	<title>ワイフーペースト - {{ name }}</title>
 
 	<!-- Bootstrap core CSS -->
 	<link rel="icon" href="https://waifupaste.moe/raw/favicon.png">
@@ -21,8 +21,15 @@
 	<![endif]-->
 
 	<style>
+    @font-face {
+    font-family: 'Kanna';
+    src: url('https://waifupaste.moe/raw/eZI.otf') format('opentype');
+    font-style: normal;
+    font-weight: normal:
+    }
 	body {
 	    margin: 10px;
+        font-family: Kanna;
         background-image: url("assets/imgs/texture.png");
 	}
 	</style>
@@ -32,13 +39,13 @@
 
 	    <div class="row">
 		<div class="page-header">
-		    <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">WaifuPaste</a> - {{ name }}</h1>
+		    <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">ワイフーペースト</a> - {{ name }}</h1>
 		</div>
 	    </div>
 
 	    <div class="row">
 		<div class="col-md-6">
-		    <h2>Generated Preview URL</h2>
+		    <h2>プレビューURL</h2>
 		    <div class="input-group">
 			<input type="text" class="form-control" value="{{ preview_url }}" id="Preview_URL_to_copy" readonly>
 			<span class="input-group-btn">
@@ -49,7 +56,7 @@
 		    </div>
 		</div>
 		<div class="col-md-6">
-		    <h2>Generated Raw URL</h2>
+		    <h2>ローURL</h2>
 		    <div class="input-group">
 			<input type="text" class="form-control" value="{{ raw_url }}" id="Raw_URL_to_copy" readonly>
 			<span class="input-group-btn">
@@ -67,15 +74,14 @@
 
 		<footer class="text-center">
 		    <p class="text-muted">
-		    <small>
-			Built using
-			<a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
-			<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
-			<a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
-			<a href="http://www.python.org/">Python</a>. Read the
-            <a href="http://waifupaste.moe/md/faq">FAQ</a>.
-            <a href
-		    </small>
+            <small>
+                <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>、
+                <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>、
+                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, あよび
+                <a href="http://www.python.org/">Python</a>をしようしてこうちくされています。
+                <a href="https://waifupaste.moe/md/faq">FAQ</a>をよんでください。 
+                <a href="mailto:abuse@waifupaste.moe">らんよう（ABUSE)</a>
+            </small>
 		    </p>
 		</footer>
 
