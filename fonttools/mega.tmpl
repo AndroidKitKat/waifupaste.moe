@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>ワイフーペースト</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
+    <link rel="icon" href="https://waifupaste.moe/raw/favicon.png">
+    <link href="/assets/css/bootstrap.css/" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <style>
+    @font-face {
+    font-family: 'Kanna';
+    src: url('https://waifupaste.moe/raw/beD.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal:
+    }
+        body {
+            margin: 10px;
+            background-image: url("assets/imgs/texture.png");
+            font-family: Kanna;
+            text-decoration: none;
+        }
+
+input {
+font-family: monospace;
+      }
+input::placeholder {
+font-family: 'Kanna'
+}
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        <div class="page-header">
+            <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">ワイフーペースト</a></h1>
+        </div>
+    </div>
+
+    <div class="isa_warning">
+        <i class = "fa fa-warning"></i>
+<b>注意：</b>ワイフーペスト・ベーターは買え初中です。アップデートについてはベータ版<a href="https://beta.waifupaste.moe/">ワイフーペースト</a>をごちん下さい。</h1>
+        </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>URLを短縮</h2>
+            <pre>
+curl -d "$URL" https://waifupaste.moe/url
+</pre>
+        </div>
+        <div class="col-md-6">
+            <h2>&#8203;</h2>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
+                <span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()"
+                        title="Your URL won't be the only thing that's short now~~">
+				<i class="fa fa-arrow-right" id="URL_button_icon"></i>
+			    </button>
+			</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>ファイルを貼りつきけ</h2>
+            <pre>
+curl --data-binary @- https://waifupaste.moe/paste < $FILE
+</pre>
+        </div>
+        <div class="col-md-6">
+            <h2>&#8203;</h2>
+            <form name="myForm" action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
+                <div class="input-group">
+            <span class="btn btn-default btn-file input-group-addon">
+                ブラウス <input type="file" name="source" ="form-control" id="file_to_paste">
+            </span>
+
+                    <input type="text" class="form-control" placeholder="アップロードするファイル" id="selected_file" readonly>
+
+
+                    <span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste your file Onii-chan~ <3">
+				<i class="fa fa-upload" id="file_button_icon"></i>
+			    </button>
+			</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </div>
+</div>
+
+    <img src="assets/imgs/qts/{{ img }}.jp2"
+         style="position: fixed; right: 0px; bottom:0px; z-index: -1000; opacity: 0.7">
+
+    <footer class="text-center">
+        <p class="text-muted">
+            <small>
+                <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>、
+                <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>、
+                <a href="https://www.cloudflare.com">Cloudflare</a>、
+                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>、あよび
+                <a href="http://www.python.org/">Python</a>をしよして構築されています。
+                <a href="https://waifupaste.moe/md/faq">FAQ</a>を呼んで下さい。 
+                <a href="mailto:abuse@waifupaste.moe">乱用（ABUSE)</a>
+            </small>
+        </p>
+    </footer>
+
+</div> <!-- /container -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<!-- Code for using tool in browser -->
+<script src="/assets/js/index_interactive.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>ワイフーペースト</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
+    <link rel="icon" href="https://waifupaste.moe/raw/favicon.png">
+    <link href="/assets/css/bootstrap.css/" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <style>
+    @font-face {
+    font-family: 'Kanna';
+    src: url('https://waifupaste.moe/raw/beD.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal:
+    }
+        body {
+            margin: 10px;
+            background-image: url("assets/imgs/texture.png");
+            font-family: Kanna;
+            text-decoration: none;
+        }
+
+input {
+font-family: monospace;
+      }
+input::placeholder {
+font-family: 'Kanna'
+}
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        <div class="page-header">
+            <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">ワイフーペースト</a></h1>
+        </div>
+    </div>
+
+    <div class="isa_warning">
+        <i class = "fa fa-warning"></i>
+<b>注意：</b>ワイフーペスト・ベーターは買え初中です。アップデートについてはベータ版<a href="https://beta.waifupaste.moe/">ワイフーペースト</a>をごちん下さい。</h1>
+        </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>URLを短縮</h2>
+            <pre>
+curl -d "$URL" https://waifupaste.moe/url
+</pre>
+        </div>
+        <div class="col-md-6">
+            <h2>&#8203;</h2>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
+                <span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()"
+                        title="Your URL won't be the only thing that's short now~~">
+				<i class="fa fa-arrow-right" id="URL_button_icon"></i>
+			    </button>
+			</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>ファイルを貼りつきけ</h2>
+            <pre>
+curl --data-binary @- https://waifupaste.moe/paste < $FILE
+</pre>
+        </div>
+        <div class="col-md-6">
+            <h2>&#8203;</h2>
+            <form name="myForm" action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
+                <div class="input-group">
+            <span class="btn btn-default btn-file input-group-addon">
+                ブラウス <input type="file" name="source" ="form-control" id="file_to_paste">
+            </span>
+
+                    <input type="text" class="form-control" placeholder="アップロードするファイル" id="selected_file" readonly>
+
+
+                    <span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste your file Onii-chan~ <3">
+				<i class="fa fa-upload" id="file_button_icon"></i>
+			    </button>
+			</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </div>
+</div>
+
+    <img src="assets/imgs/qts/{{ img }}.jp2"
+         style="position: fixed; right: 0px; bottom:0px; z-index: -1000; opacity: 0.7">
+
+    <footer class="text-center">
+        <p class="text-muted">
+            <small>
+                <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>、
+                <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>、
+                <a href="https://www.cloudflare.com">Cloudflare</a>、
+                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>、あよび
+                <a href="http://www.python.org/">Python</a>をしよして構築されています。
+                <a href="https://waifupaste.moe/md/faq">FAQ</a>を呼んで下さい。 
+                <a href="mailto:abuse@waifupaste.moe">乱用（ABUSE)</a>
+            </small>
+        </p>
+    </footer>
+
+</div> <!-- /container -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<!-- Code for using tool in browser -->
+<script src="/assets/js/index_interactive.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>WaifuPaste</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
+    <link rel="icon" href="https//waifupaste.moe/raw/favicon.png">
+    <link href="/assets/css/bootstrap.css/" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <style>
+        body {
+            margin: 10px;
+            background-image: url("assets/imgs/texture.png");
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        <div class="page-header">
+            <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">WaifuPaste</a></h1>
+        </div>
+    </div>
+
+    <div class="isa_warning">
+        <i class = "fa fa-warning"></i>
+As of August 1, 2019, public uploading has been restored. Thanks for your cooperation. 
+        </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Shorten URL</h2>
+            <pre>
+curl -d "$URL" https://waifupaste.moe/url
+</pre>
+        </div>
+        <div class="col-md-6">
+            <h2>&#8203;</h2>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
+                <span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()"
+                        title="Get shortened URL">
+				<i class="fa fa-arrow-right" id="URL_button_icon"></i>
+			    </button>
+			</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Paste File</h2>
+            <pre>
+curl --data-binary @- https://waifupaste.moe/paste < $FILE
+</pre>
+        </div>
+        <div class="col-md-6">
+            <h2>&#8203;</h2>
+<!--            <form action="/paste" class="dropzone" id="fuck-dropzone"></form>-->
+            <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
+                <div class="fallback">
+            <span class="btn btn-default btn-file input-group-addon">
+                Browse <input type="file" name="source" ="form-control" id="file_to_paste">
+            </span>
+
+                    <input type="text" class="form-control" placeholder="File to Upload" id="selected_file" readonly>
+
+
+                    <span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste File">
+				<i class="fa fa-upload" id="file_button_icon"></i>
+			    </button>
+			</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </div>
+</div>
+
+    <img src="assets/imgs/qts/{{ img }}.png"
+         style="position: fixed; right: 20px; bottom:0px; z-index: -1000; opacity: 0.7">
+
+    <footer class="text-center">
+        <p class="text-muted">
+            <small>
+                Built using
+                <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+                <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
+                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
+                <a href="http://www.python.org/">Python</a>. Read the
+                <a href="https://waifupaste.moe/md/faq">FAQ</a>.
+            </small>
+        </p>
+    </footer>
+
+</div> <!-- /container -->
+
+<!-- J-J-J-J-J-JANK Uploading-->
+<script type="text/javascript">
+    var form = document.getElementById('beta-send').addEventListener('click',function (event) {
+        event.preventDefault();
+    });
+    form.onsubmit = function() {
+        var formData = new FormData(form);
+        formData.append('file',file);
+        var xhr = new XMLHttpRequest();
+        xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+        xhr.open('POST', form.getAttribute('action'), true);
+        <!-- Why you no set-->
+        xhr.send(formData);
+        return false;
+        }
+</script>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<!-- Code for using tool in browser -->
+<script src="/assets/js/index_interactive.js"></script>
+<script src="/assets/js/dropzone.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>WaifuPaste</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
+    <link rel="icon" href="https//waifupaste.moe/raw/favicon.png">
+    <link href="/assets/css/bootstrap.css/" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <style>
+        body {
+            margin: 10px;
+            background-image: url("assets/imgs/texture.png");
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        <div class="page-header">
+            <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">WaifuPaste</a></h1>
+        </div>
+    </div>
+
+    <div class="isa_warning">
+        <i class = "fa fa-warning"></i>
+As of August 1, 2019, public uploading has been restored. Thanks for your cooperation. 
+        </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Shorten URL</h2>
+            <pre>
+curl -d "$URL" https://waifupaste.moe/url
+</pre>
+        </div>
+        <div class="col-md-6">
+            <h2>&#8203;</h2>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
+                <span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()"
+                        title="Get shortened URL">
+				<i class="fa fa-arrow-right" id="URL_button_icon"></i>
+			    </button>
+			</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Paste File</h2>
+            <pre>
+curl --data-binary @- https://waifupaste.moe/paste < $FILE
+</pre>
+        </div>
+        <div class="col-md-6">
+            <h2>&#8203;</h2>
+            <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
+                <div class="input-group">
+            <span class="btn btn-default btn-file input-group-addon">
+                Browse <input type="file" name="source" ="form-control" id="file_to_paste">
+            </span>
+
+                    <input type="text" class="form-control" placeholder="File to Upload" id="selected_file" readonly>
+
+
+                    <span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste File">
+				<i class="fa fa-upload" id="file_button_icon"></i>
+			    </button>
+			</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </div>
+</div>
+
+    <img src="assets/imgs/qts/{{ img }}.png"
+         style="position: fixed; right: 20px; bottom:0px; z-index: -1000; opacity: 0.7">
+
+    <footer class="text-center">
+        <p class="text-muted">
+            <small>
+                Built using
+                <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+                <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
+                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
+                <a href="http://www.python.org/">Python</a>. Read the
+                <a href="https://waifupaste.moe/md/faq">FAQ</a>.
+            </small>
+        </p>
+    </footer>
+
+</div> <!-- /container -->
+
+<!-- J-J-J-J-J-JANK Uploading-->
+<script type="text/javascript">
+    var form = document.getElementById('beta-send').addEventListener('click',function (event) {
+        event.preventDefault();
+    });
+    form.onsubmit = function() {
+        var formData = new FormData(form);
+        formData.append('file',file);
+        var xhr = new XMLHttpRequest();
+        xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
+        xhr.open('POST', form.getAttribute('action'), true);
+        <!-- Why you no set-->
+        xhr.send(formData);
+        return false;
+        }
+</script>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<!-- Code for using tool in browser -->
+<script src="/assets/js/index_interactive.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>ワイフーペースト - {{ name }}</title>
+
+	<!-- Bootstrap core CSS -->
+	<link rel="icon" href="https://yld.me/raw/favicon">
+	<link href="/assets/css/pygments/{{ pygment }}.css" rel="stylesheet">
+	<!--<link href="/assets/css/blugold.css" rel="stylesheet">-->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="icon" href="https://waifupaste.moe/raw/favicon.png">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+    @font-face {
+    font-family: 'Kanna';
+    src: url('https://waifupaste.moe/raw/beD.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal:
+    }
+	body {
+	    margin: 10px;
+        background-image: url("assets/imgs/texture.png");
+        font-family: Kanna;
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+        <div class="row">
+            <div class="page-header">
+                <ul class="nav nav-pills pull-right">
+                    {% if mime_type == 'text/markdown' %}
+                    <li><a href="/{{ name  }}"><i class="fa fa-file-text-o"></i> プレビュー</a></li>
+                    {% elif mime_type.startswith('text') %}
+                    <li><a href="/md/{{ name  }}"><i class="fa fa-file-code-o"></i> Markdown</a></li>
+                    {% end %}
+                    <li><a href="/raw/{{ name }}{{ file_ext }}"><i class="fa fa-file-o"></i>ロー</a></li>
+                    <li class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            スタイル
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            {% for style in styles %}
+                            <li><a href="/{{ name  }}?style={{ style  }}">{{ style  }}</a></li>
+                            {% end %}
+                        </ul>
+
+                    </li>
+                </ul>
+		    <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">ワイフーペースト</a> - {{ name }}</h1>
+            </div>
+        </div>
+
+
+
+<!--
+	    <div class="row">
+		<div class="page-header">
+		    <ul class="nav nav-pills pull-right">
+			{% if mime_type == 'text/markdown' %}
+			<li><a href="/{{ name }}"><i class="fa fa-file-text-o"></i> Preview</a></li>
+			{% elif mime_type.startswith('text') %}
+			<li><a href="/md/{{ name }}"><i class="fa fa-file-code-o"></i> Markdown</a></li>
+			{% end %}
+			<li><a href="/raw/{{ name }}{{ file_ext }}"><i class="fa fa-file-o"></i> RAW</a></li>
+			<li class="dropdown">
+			    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				Style
+				<span class="caret"></span>
+			    </button>
+			    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				{% for style in styles %}
+				<li><a href="/{{ name }}?style={{ style }}">{{ style }}</a></li>
+				{% end %}
+			    </ul>
+			</li>
+		    </ul>
+		</div>
+	    </div>-->
+
+	    <div class="row">
+		{% raw file_html %}
+	    </div>
+
+
+        <img src="assets/imgs/qts/{{ img }}.jp2" style="position: fixed; right:0px; bottom:0px;z-index:-1000; opacity:0.7">
+
+		<footer class="text-center">
+		    <p class="text-muted">
+            <small>
+                <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>、
+                <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>、
+                <a href="https://www.cloudflare.com">Cloudflare</a>、
+                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>、あよび
+                <a href="http://www.python.org/">Python</a>をしよして構築されています。
+                <a href="https://waifupaste.moe/md/faq">FAQ</a>を呼んで下さい。 
+                <a href="mailto:abuse@waifupaste.moe">乱用（ABUSE)</a>
+            </small>
+		    </p>
+		</footer>
+
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!-- fuck you audron-->
+    <script src="/assets/js/index_interactive.js"></script>
+    </body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>ワイフーペースト - {{ name }}</title>
+
+	<!-- Bootstrap core CSS -->
+	<link rel="icon" href="https://waifupaste.moe/raw/favicon.png">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+    @font-face {
+    font-family: 'Kanna';
+    src: url('https://waifupaste.moe/raw/beD.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal:
+    }
+	body {
+	    margin: 10px;
+        font-family: Kanna;
+        background-image: url("assets/imgs/texture.png");
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">ワイフーペースト</a> - {{ name }}</h1>
+		</div>
+	    </div>
+
+	    <div class="row">
+		<div class="col-md-6">
+		    <h2>プレビューURL</h2>
+		    <div class="input-group">
+			<input type="text" class="form-control" value="{{ preview_url }}" id="Preview_URL_to_copy" readonly>
+			<span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" onclick="copy_url_to_clipboard('#Preview_URL_to_copy')" title="Copy Preview URL">
+				<i class="fa fa-clipboard" id="URL_button_icon"></i>
+			    </button>
+			</span>
+		    </div>
+		</div>
+		<div class="col-md-6">
+		    <h2>ローURL</h2>
+		    <div class="input-group">
+			<input type="text" class="form-control" value="{{ raw_url }}" id="Raw_URL_to_copy" readonly>
+			<span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" onclick="copy_url_to_clipboard('#Raw_URL_to_copy')" title="Copy Raw URL">
+				<i class="fa fa-clipboard" id="URL_button_icon"></i>
+			    </button>
+			</span>
+		    </div>
+		</div>
+	    </div>
+
+
+        <img src="assets/imgs/qts/{{ img  }}.jp2" style="position: fixed; right: 0px; bottom:0px; z-index: -1000; opacity: 0.7">
+
+
+		<footer class="text-center">
+		    <p class="text-muted">
+            <small>
+                <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>、
+                <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>、
+                <a href="https://www.cloudflare.com">Cloudflare</a>、
+                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>、あよび
+                <a href="http://www.python.org/">Python</a>をしよして構築されています。
+                <a href="https://waifupaste.moe/md/faq">FAQ</a>を呼んで下さい。 
+                <a href="mailto:abuse@waifupaste.moe">乱用（ABUSE)</a>
+            </small>
+		    </p>
+		</footer>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+	<!-- Code for using tool in browser -->
+	<script src="/assets/js/index_interactive.js"></script>
+    </body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>WaifuPaste - {{ name }}</title>
+
+	<!-- Bootstrap core CSS -->
+<!--	<link href="/assets/css/blugold.css" rel="stylesheet">-->
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<!-- Latest compiled and minified CSS -->
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+	<style>
+	body {
+	    margin: 10px;
+	}
+	</style>
+    </head>
+    <body>
+	<div class="container">
+
+	    <div class="row">
+		<div class="page-header">
+		    <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">WaifuPaste</a> - {{ name }}</h1>
+		</div>
+	    </div>
+
+	    <div class="row">
+		<div class="col-md-6">
+		    <h2>Generated Preview URL</h2>
+		    <div class="input-group">
+			<input type="text" class="form-control" value="{{ preview_url }}" id="Preview URL_to_copy" readonly>
+			<span class="input-group-btn">
+			    <button class="btn btn-default" type="submit" onclick="copy_url_to_clipboard('#Preview_URL_to_copy')" title="Copy Preview URL">
+				<i class="fa fa-clipboard" id="URL_button_icon"></i>
+			    </button>
+			</span>
+		    </div>
+		</div>
+	    </div>
+        <div class="col-md-6">
+            <h2>Generated Raw URL</h2>
+            <div class = "input-group">
+                <input type="text" class="form-control" value="{{ raw_url }}"id="Raw_URL_to_copy" readonly>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit" oncopy="copy_url_to_clipboard('#Raw_URL_to_copy')" title="Copy Raw URL">
+                    <i class ="fa fa-clipboard" id="URL_button_icon"></i>
+                    </button>
+                    </span>
+                    </div>
+                    </div>
+                    </div>
+	    <div class="row">
+		<hr/>
+
+		<footer class="text-center">
+		    <p class="text-muted">
+		    <small>
+			Built using
+			<a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
+			<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
+			<a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
+			<a href="http://www.python.org/">Python</a>. 
+		    </small>
+		    </p>
+		</footer>
+	    </div>
+
+	</div> <!-- /container -->
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+	<!-- Code for using tool in browser -->
+	<script src="/assets/js/index_interactive.js"></script>
+    </body>
+</html>
+# WaifuPaste FAQ
+
+*Last updated November 05, 2019*
+
+**What is WaifuPaste?**
+
+My **personal** file hosting site. Upload here at your own risk.
+
+**Who is the administrator?**
+
+AndroidKitKat on Freenode. 
+If you know the name 'AndroidKitKat' from someone IRL, it's probably me. 
+
+**Report Abuse**
+
+Abuse is taken very seriously at WaifuPaste. If you suspect there is foul play partaking on WaifuPaste, please email me at [abuse@waifupaste.moe](mailto:abuse@waifupaste.moe) immediately with the file id. I don't want anything bad on here.
+
+**Do you have a privacy policy?**
+
+No. I don't look through your uploads or anything, unless I notice anything suspicious from the server log. Here's a simple rule: if you don't feel comfortable uploading something without it being traced back to you, don't upload it. 
+
+**Is this free?**
+
+Yes, but don't spoil the fun for me or anyone else by uploading anything stupid.
+
+**Who is best girl?**
+
+That's debatable. Currently, [Konata Izumi](https://myanimelist.net/character/2169/Konata_Izumi) 
+from Lucky Star is. If you disagree, tough luck. I can change my mind, 
+though. If you would like to submit waifus for the site, email me at [sendmeyour@waifu.club](mailto:sendmeyour@waifu.club)[.](https://www.youtube.com/watch?v=yuVn2tjlnQo)
+

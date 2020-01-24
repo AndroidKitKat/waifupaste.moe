@@ -32,7 +32,7 @@ import pygments.util
 YLDME_ADDRESS   = '127.0.0.1'
 YLDME_PORT      = 9515
 TRUE_STRINGS    = ('1', 'true', 'on', 'yes')
-NUMBER_OF_WAIFUS =  len(os.listdir('assets/imgs/qts/'))
+NUMBER_OF_WAIFUS =  len(os.listdir('assets/imgs/qts/png'))
 LOG_FILE = '/home/akk/.config/yldme/log.txt'
 MIME_TYPES = {
     'image/jpeg': '.jpg',

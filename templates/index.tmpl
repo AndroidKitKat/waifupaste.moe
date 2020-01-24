@@ -26,7 +26,7 @@
     <style>
     @font-face {
     font-family: 'Kanna';
-    src: url('https://waifupaste.moe/raw/beD.woff2') format('woff2');
+    src: url('https://waifupaste.moe/raw/Ve.woff2') format('woff2');
     font-style: normal;
     font-weight: normal:
     }
@@ -36,6 +36,13 @@
             font-family: Kanna;
             text-decoration: none;
         }
+
+input {
+font-family: monospace;
+      }
+input::placeholder {
+font-family: 'Kanna'
+}
     </style>
 </head>
 <body>
@@ -49,11 +56,11 @@
 
     <div class="isa_warning">
         <i class = "fa fa-warning"></i>
-<b>ちゅうい：</b>ワイフーペスト・ベーターはかいはつちゅうです。アップデートについてはベータばん<a href="https://beta.waifupaste.moe/">ワイフーペースト</a>をごらんください。</h1>
+<b>注意：</b>ワイフーペスト・ベーターは買え初中です。アップデートについてはベータ版<a href="https://beta.waifupaste.moe/">ワイフーペースト</a>をごちん下さい。</h1>
         </div>
     <div class="row">
         <div class="col-md-6">
-            <h2>URLをたんしゅく</h2>
+            <h2>URLを短縮</h2>
             <pre>
 curl -d "$URL" https://waifupaste.moe/url
 </pre>
@@ -73,7 +80,7 @@ curl -d "$URL" https://waifupaste.moe/url
     </div>
     <div class="row">
         <div class="col-md-6">
-            <h2>ファイルをはりつきけ</h2>
+            <h2>ファイルを貼りつきけ</h2>
             <pre>
 curl --data-binary @- https://waifupaste.moe/paste < $FILE
 </pre>
@@ -102,7 +109,7 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
     </div>
 </div>
 
-    <img src="assets/imgs/qts/{{ img }}.jp2"
+    <img src="assets/imgs/qts/png/{{ img }}.png"
          style="position: fixed; right: 0px; bottom:0px; z-index: -1000; opacity: 0.7">
 
     <footer class="text-center">
@@ -110,10 +117,11 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
             <small>
                 <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>、
                 <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>、
-                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, あよび
-                <a href="http://www.python.org/">Python</a>をしようしてこうちくされています。
-                <a href="https://waifupaste.moe/md/faq">FAQ</a>をよんでください。 
-                <a href="mailto:abuse@waifupaste.moe">らんよう（ABUSE)</a>
+                <a href="https://www.cloudflare.com">Cloudflare</a>、
+                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>、あよび
+                <a href="http://www.python.org/">Python</a>をしよして構築されています。
+                <a href="https://waifupaste.moe/md/faq">FAQ</a>を呼んで下さい。 
+                <a href="mailto:abuse@waifupaste.moe">乱用（ABUSE)</a>
             </small>
         </p>
     </footer>
