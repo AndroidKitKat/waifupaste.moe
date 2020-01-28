@@ -343,6 +343,7 @@ class YldMeHandler(tornado.web.RequestHandler):
             value        = self.request.body
 
         if type == 'url':
+
             value_hash = value
         elif type == 'paste':
             value_hash = checksum(value)
@@ -390,8 +391,9 @@ class YldMeHandler(tornado.web.RequestHandler):
 
             raw_url   = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
             self.application.logger.info('Posted: {}'.format(raw_url))
-            log_ip(raw_url, self.request.headers.get('CF-Connecting-IP', ''))
 
+        
+        log_ip(raw_url, self.request.headers.get('CF-Connecting-IP', ''))
         if use_template:
             self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url, **{'img':random_waifu()})
         else:
