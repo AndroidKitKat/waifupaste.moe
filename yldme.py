@@ -84,7 +84,10 @@ def guess_extension(mime_type):
 
 
 def determine_text_format(file_data, file_mime='text/plain', file_ext='.txt', style='default', linenos=False):
-    file_data = file_data.decode('utf8')
+    try:
+        file_data = file_data.decode('utf8')
+    except UnicodeDecodeError:
+        file_data = file_data.decode('latin-1')
     json_data = None
     yaml_data = None
 
@@ -96,7 +99,7 @@ def determine_text_format(file_data, file_mime='text/plain', file_ext='.txt', st
             else:
                 file_mime = 'text/x-yaml'
                 file_ext  = '.yaml'
-        except (yaml.parser.ParserError, yaml.scanner.ScannerError):
+        except (yaml.parser.ParserError, yaml.scanner.ScannerError, yaml.reader.ReaderError):
             pass
 
         try:
