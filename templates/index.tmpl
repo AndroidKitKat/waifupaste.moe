@@ -47,9 +47,9 @@ curl -d "$URL" https://yld.me/url
 		<div class="col-md-6">
 		    <h2>&#8203;</h2>
 		    <div class="input-group">
-			<input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
+			<input type="text" class="form-control" placeholder="URL" id="URL_to_copy" style="height: 39px">
 			<span class="input-group-btn">
-			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()" title="Get shortened URL">
+			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()" title="Get shortened URL" style="height: 39px">
 				<i class="fa fa-arrow-right" id="URL_button_icon"></i>
 			    </button>
 			</span>
@@ -68,17 +68,20 @@ curl --data-binary @- https://yld.me/paste < $TEXT
 		    <h2>&#8203;</h2>
 		    <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
 		    <div class="input-group">
-
-			<span class="btn btn-default btn-file input-group-addon">
+			<span class="btn btn-default input-group-addon" onclick="toggle_text()" name="txt_toggle" id="txt_toggle_btn">Text</span>
+			<span class="btn btn-default btn-file input-group-addon" id="file_upload_btn">
 			    Browse <input type="file" name="source" ="form-control" id="file_to_paste">
 			</span>
 
-			<input type="text" class="form-control" placeholder="File to Upload" id="selected_file" readonly>
-
+			<input type="text" class="form-control" placeholder="File to Upload" id="selected_file" readonly style="height: 39px">
+			<textarea type="text" class="form-control" placeholder="Paste or type your text here." id="text_input_box" style="display:none; resize:none; text-align: center; vertical-align: middle; height:39px"></textarea>
 			<span class="input-group-btn">
-			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste File">
+			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste File" style="height:39px">
 				<i class="fa fa-upload" id="file_button_icon"></i>
 			    </button>
+			    <button class="btn btn-default" type="button" onclick="post_text()" id="text_file_btn" style="display:none; height: 39px" title="Paste text">
+				<i class="fa fa-upload" id="file_button_icon"></i>
+				</button>
 			</span>
 		    </div>
 		    </form>

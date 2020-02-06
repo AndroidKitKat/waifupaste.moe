@@ -24,6 +24,26 @@ function copy_url_to_clipboard(url) {
     document.execCommand("copy");
 }
 
+function toggle_text(){
+	$('#file_upload_btn').toggle();
+	$('#selected_file').toggle();
+	$('#text_input_box').toggle();
+	$('#paste_file_btn').toggle();
+	$('#text_file_btn').toggle();
+	if($('#txt_toggle_btn').text() === "Text"){
+                $('#txt_toggle_btn').text("File");
+        } else {
+                $('#txt_toggle_btn').text("Text");
+        };
+}
+
+function post_text() {
+        // alert(text_to_post);
+        $.post('/paste', $('#text_input_box').val(), function(data){
+                window.location.replace(data);
+        });
+}
+
 function shorten_url() {
     // disable inputs and buttons while querying
     $(".input-group").children().prop('disabled', true);
