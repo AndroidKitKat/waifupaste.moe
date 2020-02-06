@@ -1,4 +1,3 @@
-
 // set button to read enter as keypress & to clear success upon typing
 $('#URL_to_copy').keypress(function (e) {
     var key = e.which;
@@ -23,29 +22,6 @@ $('#URL_to_copy').keypress(function (e) {
 function copy_url_to_clipboard(url) {
     $(url).select();
     document.execCommand("copy");
-}
-
-function toggleText()  {
-	$('#file_upload_btn').toggle();
-	$('#input_box').toggle();
-	$('#text_input_box').toggle();
-	$('#paste_file_btn').toggle();
-	$('#text_file_btn').toggle();
-	if($('#txt_toggle_btn').text() === "テキスト"){
-		$('#txt_toggle_btn').text("ファイル");
-	} else {
-		$('#txt_toggle_btn').text("テキスト");
-	};
-}
-
-
-
-
-function post_text() {
-	// alert(text_to_post);
-	$.post('/paste', $('#text_input_box').val(), function(data){
-		window.location.replace(data);
-	});
 }
 
 function shorten_url() {
@@ -88,7 +64,9 @@ $(function () {
   const form = $ ('#paste_file_form')
 
 form.on ('submit', (e) => {
-  const selectedFile = $ ('#input_box').val ()
+  const selectedFile = $ ('#selected_file').val ()
+  
+  console.log ('selected file -->', selectedFile)
   
   if (!selectedFile) {
     e.preventDefault ();

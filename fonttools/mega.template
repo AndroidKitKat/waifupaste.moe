@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -26,7 +26,7 @@
     <style>
     @font-face {
     font-family: 'Kanna';
-    src: url('https://waifupaste.moe/raw/beD.woff2') format('woff2');
+    src: url('https://waifupaste.moe/raw/Ve.woff2') format('woff2');
     font-style: normal;
     font-weight: normal:
     }
@@ -40,6 +40,12 @@
 input {
 font-family: monospace;
       }
+textarea {
+font-family: monospace;
+}
+textarea::placeholder {
+font-family: 'Kanna'
+}
 input::placeholder {
 font-family: 'Kanna'
 }
@@ -68,10 +74,10 @@ curl -d "$URL" https://waifupaste.moe/url
         <div class="col-md-6">
             <h2>&#8203;</h2>
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
+                <input type="text" class="form-control" placeholder="URL" id="URL_to_copy" style="height: 39px">
                 <span class="input-group-btn">
 			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()"
-                        title="Your URL won't be the only thing that's short now~~">
+                        title="Your URL won't be the only thing that's short now~~" style="height: 39px">
 				<i class="fa fa-arrow-right" id="URL_button_icon"></i>
 			    </button>
 			</span>
@@ -89,15 +95,18 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
             <h2>&#8203;</h2>
             <form name="myForm" action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
                 <div class="input-group">
-            <span class="btn btn-default btn-file input-group-addon">
+	    <span class="btn btn-default input-group-addon" onclick="toggleText()" name="txt_toggle" id="txt_toggle_btn">テキスト</span>
+            <span class="btn btn-default btn-file input-group-addon" id="file_upload_btn">
                 ブラウス <input type="file" name="source" ="form-control" id="file_to_paste">
             </span>
 
-                    <input type="text" class="form-control" placeholder="アップロードするファイル" id="selected_file" readonly>
-
-
+                    <input type="text" class="form-control" placeholder="アップロードするファイル" id="input_box" style="height:39px" readonly>
+		    <textarea type="text" class="form-control" placeholder="ここにテキストを貼り付けるか入力してください" id="text_input_box" style="display:none; resize:none; text-align: center; vertical-align: middle; height:39px"></textarea>
                     <span class="input-group-btn">
-			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste your file Onii-chan~ <3">
+			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste your file Onii-chan~ <3"style="height: 39px">
+				<i class="fa fa-upload" id="file_button_icon"></i>
+			    </button>
+			    <button class="btn btn-default" type="button" onclick="post_text()" id="text_file_btn" style="display:none; height: 39px" title="Paste your text Onii-chan~ <3">
 				<i class="fa fa-upload" id="file_button_icon"></i>
 			    </button>
 			</span>
@@ -109,143 +118,7 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
     </div>
 </div>
 
-    <img src="assets/imgs/qts/{{ img }}.jp2"
-         style="position: fixed; right: 0px; bottom:0px; z-index: -1000; opacity: 0.7">
-
-    <footer class="text-center">
-        <p class="text-muted">
-            <small>
-                <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>、
-                <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>、
-                <a href="https://www.cloudflare.com">Cloudflare</a>、
-                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>、あよび
-                <a href="http://www.python.org/">Python</a>をしよして構築されています。
-                <a href="https://waifupaste.moe/md/faq">FAQ</a>を呼んで下さい。 
-                <a href="mailto:abuse@waifupaste.moe">乱用（ABUSE)</a>
-            </small>
-        </p>
-    </footer>
-
-</div> <!-- /container -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
-<!-- Code for using tool in browser -->
-<script src="/assets/js/index_interactive.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>ワイフーペースト</title>
-
-    <!-- Bootstrap core CSS -->
-    <!-- Latest compiled and minified CSS -->
-
-    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
-    <link rel="icon" href="https://waifupaste.moe/raw/favicon.png">
-    <link href="/assets/css/bootstrap.css/" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-
-    <style>
-    @font-face {
-    font-family: 'Kanna';
-    src: url('https://waifupaste.moe/raw/beD.woff2') format('woff2');
-    font-style: normal;
-    font-weight: normal:
-    }
-        body {
-            margin: 10px;
-            background-image: url("assets/imgs/texture.png");
-            font-family: Kanna;
-            text-decoration: none;
-        }
-
-input {
-font-family: monospace;
-      }
-input::placeholder {
-font-family: 'Kanna'
-}
-    </style>
-</head>
-<body>
-<div class="container">
-
-    <div class="row">
-        <div class="page-header">
-            <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">ワイフーペースト</a></h1>
-        </div>
-    </div>
-
-    <div class="isa_warning">
-        <i class = "fa fa-warning"></i>
-<b>注意：</b>ワイフーペスト・ベーターは買え初中です。アップデートについてはベータ版<a href="https://beta.waifupaste.moe/">ワイフーペースト</a>をごちん下さい。</h1>
-        </div>
-    <div class="row">
-        <div class="col-md-6">
-            <h2>URLを短縮</h2>
-            <pre>
-curl -d "$URL" https://waifupaste.moe/url
-</pre>
-        </div>
-        <div class="col-md-6">
-            <h2>&#8203;</h2>
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
-                <span class="input-group-btn">
-			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()"
-                        title="Your URL won't be the only thing that's short now~~">
-				<i class="fa fa-arrow-right" id="URL_button_icon"></i>
-			    </button>
-			</span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <h2>ファイルを貼りつきけ</h2>
-            <pre>
-curl --data-binary @- https://waifupaste.moe/paste < $FILE
-</pre>
-        </div>
-        <div class="col-md-6">
-            <h2>&#8203;</h2>
-            <form name="myForm" action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
-                <div class="input-group">
-            <span class="btn btn-default btn-file input-group-addon">
-                ブラウス <input type="file" name="source" ="form-control" id="file_to_paste">
-            </span>
-
-                    <input type="text" class="form-control" placeholder="アップロードするファイル" id="selected_file" readonly>
-
-
-                    <span class="input-group-btn">
-			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste your file Onii-chan~ <3">
-				<i class="fa fa-upload" id="file_button_icon"></i>
-			    </button>
-			</span>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    </div>
-</div>
-
-    <img src="assets/imgs/qts/{{ img }}.jp2"
+    <img src="assets/imgs/qts/png/{{ img }}.png"
          style="position: fixed; right: 0px; bottom:0px; z-index: -1000; opacity: 0.7">
 
     <footer class="text-center">
@@ -416,17 +289,17 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>WaifuPaste</title>
+    <title>ワイフーペースト</title>
 
     <!-- Bootstrap core CSS -->
     <!-- Latest compiled and minified CSS -->
 
     <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
-    <link rel="icon" href="https//waifupaste.moe/raw/favicon.png">
+    <link rel="icon" href="https://waifupaste.moe/raw/favicon.png">
     <link href="/assets/css/bootstrap.css/" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -437,10 +310,25 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
 
 
     <style>
+    @font-face {
+    font-family: 'Kanna';
+    src: url('https://waifupaste.moe/raw/Ve.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal:
+    }
         body {
             margin: 10px;
             background-image: url("assets/imgs/texture.png");
+            font-family: Kanna;
+            text-decoration: none;
         }
+
+input {
+font-family: monospace;
+      }
+input::placeholder {
+font-family: 'Kanna'
+}
     </style>
 </head>
 <body>
@@ -448,17 +336,17 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
 
     <div class="row">
         <div class="page-header">
-            <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">WaifuPaste</a></h1>
+            <h1><i class="fa fa-clipboard"></i> <a href="https://waifupaste.moe/">ワイフーペースト</a></h1>
         </div>
     </div>
 
     <div class="isa_warning">
         <i class = "fa fa-warning"></i>
-As of August 1, 2019, public uploading has been restored. Thanks for your cooperation. 
+<b>注意：</b>ワイフーペスト・ベーターは買え初中です。アップデートについてはベータ版<a href="https://beta.waifupaste.moe/">ワイフーペースト</a>をごちん下さい。</h1>
         </div>
     <div class="row">
         <div class="col-md-6">
-            <h2>Shorten URL</h2>
+            <h2>URLを短縮</h2>
             <pre>
 curl -d "$URL" https://waifupaste.moe/url
 </pre>
@@ -469,7 +357,7 @@ curl -d "$URL" https://waifupaste.moe/url
                 <input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
                 <span class="input-group-btn">
 			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()"
-                        title="Get shortened URL">
+                        title="Your URL won't be the only thing that's short now~~">
 				<i class="fa fa-arrow-right" id="URL_button_icon"></i>
 			    </button>
 			</span>
@@ -478,24 +366,24 @@ curl -d "$URL" https://waifupaste.moe/url
     </div>
     <div class="row">
         <div class="col-md-6">
-            <h2>Paste File</h2>
+            <h2>ファイルを貼りつきけ</h2>
             <pre>
 curl --data-binary @- https://waifupaste.moe/paste < $FILE
 </pre>
         </div>
         <div class="col-md-6">
             <h2>&#8203;</h2>
-            <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
+            <form name="myForm" action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
                 <div class="input-group">
             <span class="btn btn-default btn-file input-group-addon">
-                Browse <input type="file" name="source" ="form-control" id="file_to_paste">
+                ブラウス <input type="file" name="source" ="form-control" id="file_to_paste">
             </span>
 
-                    <input type="text" class="form-control" placeholder="File to Upload" id="selected_file" readonly>
+                    <input type="text" class="form-control" placeholder="アップロードするファイル" id="selected_file" readonly>
 
 
                     <span class="input-group-btn">
-			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste File">
+			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste your file Onii-chan~ <3">
 				<i class="fa fa-upload" id="file_button_icon"></i>
 			    </button>
 			</span>
@@ -507,42 +395,24 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
     </div>
 </div>
 
-    <img src="assets/imgs/qts/{{ img }}.png"
-         style="position: fixed; right: 20px; bottom:0px; z-index: -1000; opacity: 0.7">
+    <img src="assets/imgs/qts/png/{{ img }}.png"
+         style="position: fixed; right: 0px; bottom:0px; z-index: -1000; opacity: 0.7">
 
     <footer class="text-center">
         <p class="text-muted">
             <small>
-                Built using
-                <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>,
-                <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>,
-                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>, and
-                <a href="http://www.python.org/">Python</a>. Read the
-                <a href="https://waifupaste.moe/md/faq">FAQ</a>.
+                <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>、
+                <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>、
+                <a href="https://www.cloudflare.com">Cloudflare</a>、
+                <a href="http://www.tornadoweb.org/en/stable/">Tornado</a>、あよび
+                <a href="http://www.python.org/">Python</a>をしよして構築されています。
+                <a href="https://waifupaste.moe/md/faq">FAQ</a>を呼んで下さい。 
+                <a href="mailto:abuse@waifupaste.moe">乱用（ABUSE)</a>
             </small>
         </p>
     </footer>
 
 </div> <!-- /container -->
-
-<!-- J-J-J-J-J-JANK Uploading-->
-<script type="text/javascript">
-    var form = document.getElementById('beta-send').addEventListener('click',function (event) {
-        event.preventDefault();
-    });
-    form.onsubmit = function() {
-        var formData = new FormData(form);
-        formData.append('file',file);
-        var xhr = new XMLHttpRequest();
-        xhr.setRequestHeader('Authorization', 'Bearer ' + user_token);
-        xhr.open('POST', form.getAttribute('action'), true);
-        <!-- Why you no set-->
-        xhr.send(formData);
-        return false;
-        }
-</script>
-<!-- Bootstrap core JavaScript
-================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
@@ -580,7 +450,7 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
 	<style>
     @font-face {
     font-family: 'Kanna';
-    src: url('https://waifupaste.moe/raw/beD.woff2') format('woff2');
+    src: url('https://waifupaste.moe/raw/Ve.woff2') format('woff2');
     font-style: normal;
     font-weight: normal:
     }
@@ -651,7 +521,7 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
 	    </div>
 
 
-        <img src="assets/imgs/qts/{{ img }}.jp2" style="position: fixed; right:0px; bottom:0px;z-index:-1000; opacity:0.7">
+        <img src="assets/imgs/qts/png/{{ img }}.png" style="position: fixed; right:0px; bottom:0px;z-index:-1000; opacity:0.7">
 
 		<footer class="text-center">
 		    <p class="text-muted">
@@ -705,7 +575,7 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
 	<style>
     @font-face {
     font-family: 'Kanna';
-    src: url('https://waifupaste.moe/raw/beD.woff2') format('woff2');
+    src: url('https://waifupaste.moe/raw/Ve.woff2') format('woff2');
     font-style: normal;
     font-weight: normal:
     }
@@ -714,6 +584,9 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
         font-family: Kanna;
         background-image: url("assets/imgs/texture.png");
 	}
+input {
+font-family: monospace;
+}
 	</style>
     </head>
     <body>
@@ -751,7 +624,7 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
 	    </div>
 
 
-        <img src="assets/imgs/qts/{{ img  }}.jp2" style="position: fixed; right: 0px; bottom:0px; z-index: -1000; opacity: 0.7">
+        <img src="assets/imgs/qts/png/{{ img  }}.png" style="position: fixed; right: 0px; bottom:0px; z-index: -1000; opacity: 0.7">
 
 
 		<footer class="text-center">

@@ -26,7 +26,7 @@
     <style>
     @font-face {
     font-family: 'Kanna';
-    src: url('https://waifupaste.moe/raw/Ve.woff2') format('woff2');
+    src: url('https://waifupaste.moe/raw/a5G.woff2') format('woff2');
     font-style: normal;
     font-weight: normal:
     }
@@ -40,6 +40,12 @@
 input {
 font-family: monospace;
       }
+textarea {
+font-family: monospace;
+}
+textarea::placeholder {
+font-family: 'Kanna'
+}
 input::placeholder {
 font-family: 'Kanna'
 }
@@ -68,10 +74,10 @@ curl -d "$URL" https://waifupaste.moe/url
         <div class="col-md-6">
             <h2>&#8203;</h2>
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="URL" id="URL_to_copy">
+                <input type="text" class="form-control" placeholder="URL" id="URL_to_copy" style="height: 39px">
                 <span class="input-group-btn">
 			    <button class="btn btn-default" type="submit" id="shorten_url_btn" onclick="shorten_url()"
-                        title="Your URL won't be the only thing that's short now~~">
+                        title="Your URL won't be the only thing that's short now~~" style="height: 39px">
 				<i class="fa fa-arrow-right" id="URL_button_icon"></i>
 			    </button>
 			</span>
@@ -89,15 +95,18 @@ curl --data-binary @- https://waifupaste.moe/paste < $FILE
             <h2>&#8203;</h2>
             <form name="myForm" action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
                 <div class="input-group">
-            <span class="btn btn-default btn-file input-group-addon">
+	    <span class="btn btn-default input-group-addon" onclick="toggleText()" name="txt_toggle" id="txt_toggle_btn">テキスト</span>
+            <span class="btn btn-default btn-file input-group-addon" id="file_upload_btn">
                 ブラウス <input type="file" name="source" ="form-control" id="file_to_paste">
             </span>
 
-                    <input type="text" class="form-control" placeholder="アップロードするファイル" id="selected_file" readonly>
-
-
+                    <input type="text" class="form-control" placeholder="アップロードするファイル" id="input_box" style="height:39px" readonly>
+		    <textarea type="text" class="form-control" placeholder="ここにテキストを貼り付けるか入力してください" id="text_input_box" style="display:none; resize:none; text-align: center; vertical-align: middle; height:39px"></textarea>
                     <span class="input-group-btn">
-			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste your file Onii-chan~ <3">
+			    <button class="btn btn-default" type="submit" id="paste_file_btn" title="Paste your file Onii-chan~ <3"style="height: 39px">
+				<i class="fa fa-upload" id="file_button_icon"></i>
+			    </button>
+			    <button class="btn btn-default" type="button" onclick="post_text()" id="text_file_btn" style="display:none; height: 39px" title="Paste your text Onii-chan~ <3">
 				<i class="fa fa-upload" id="file_button_icon"></i>
 			    </button>
 			</span>

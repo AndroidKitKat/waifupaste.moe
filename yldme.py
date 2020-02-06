@@ -34,6 +34,7 @@ YLDME_PORT      = 9515
 TRUE_STRINGS    = ('1', 'true', 'on', 'yes')
 NUMBER_OF_WAIFUS =  len(os.listdir('assets/imgs/qts/png'))
 LOG_FILE = '/home/akk/.config/yldme/log.txt'
+URL_FILE = '/home/akk/.config/yldme/urls.txt'
 MIME_TYPES = {
     'image/jpeg': '.jpg',
     'image/png' : '.png',
@@ -67,6 +68,10 @@ def load_authorized_users():
 
 def random_waifu():
     return random.randint(1, NUMBER_OF_WAIFUS)
+
+def log_url(wp_url, real_url, ip):
+    with open(URL_FILE, 'a') as url_file:
+        url_file.write('Time: {} | WP: {} | URL: {}, IP: {}\n'.format(datetime.datetime.now(), wp_url, real_url, ip))
 
 def log_ip(extension, ip):
     with open(LOG_FILE, 'a') as log_file:
@@ -114,7 +119,10 @@ def guess_extension(mime_type):
 
 
 def determine_text_format(file_data, file_mime='text/plain', file_ext='.txt', style='default', linenos=False):
-    file_data = file_data.decode('utf8')
+    try:
+        file_data = file_data.decode('utf8')
+    except:
+        file_data = file_data.decode('latin-1')
     json_data = None
     yaml_data = None
 
@@ -126,7 +134,7 @@ def determine_text_format(file_data, file_mime='text/plain', file_ext='.txt', st
             else:
                 file_mime = 'text/x-yaml'
                 file_ext  = '.yaml'
-        except (yaml.parser.ParserError, yaml.scanner.ScannerError):
+        except (yaml.parser.ParserError, yaml.scanner.ScannerError, yaml.reader.ReaderError):
             pass
 
         try:
@@ -372,6 +380,10 @@ class YldMeHandler(tornado.web.RequestHandler):
             raise tornado.web.HTTPError(500, 'Could not produce new database entry')
 
         preview_url = '{}/{}'.format(self.application.url, data.name)
+        #log urls
+        if type != 'paste':
+            log_url(preview_url, value, self.request.headers.get('CF-Connecting-IP',''))
+
         if type == 'paste':
             file_path = os.path.join(self.application.uploads_dir, data.name)
             file_mime = determine_mimetype(file_path)
@@ -391,9 +403,8 @@ class YldMeHandler(tornado.web.RequestHandler):
 
             raw_url   = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
             self.application.logger.info('Posted: {}'.format(raw_url))
-
+            log_ip(raw_url, self.request.headers.get('CF-Connecting-IP', ''))
         
-        log_ip(raw_url, self.request.headers.get('CF-Connecting-IP', ''))
         if use_template:
             self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url, **{'img':random_waifu()})
         else:
