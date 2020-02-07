@@ -38,7 +38,6 @@ function toggle_text(){
 }
 
 function post_text() {
-        // alert(text_to_post);
         $.post('/paste', $('#text_input_box').val(), function(data){
                 window.location.replace(data);
         });
