@@ -38,14 +38,13 @@
 	    </div>
 
 	    <div class="row">
+	    <h2>Shorten URL</h2>
 		<div class="col-md-6">
-		    <h2>Shorten URL</h2>
 		    <pre>
 curl -d "$URL" https://yld.me/url
 </pre>
 		</div>
 		<div class="col-md-6">
-		    <h2>&#8203;</h2>
 		    <div class="input-group">
 			<input type="text" class="form-control" placeholder="URL" id="URL_to_copy" style="height: 39px">
 			<span class="input-group-btn">
@@ -58,14 +57,15 @@ curl -d "$URL" https://yld.me/url
 	    </div>
 
 	    <div class="row">
+	    	    <h2>Paste File</h2>
 		<div class="col-md-6">
-		    <h2>Paste File</h2>
+	
 		    <pre>
 curl --data-binary @- https://yld.me/paste < $TEXT
 </pre>
 		</div>
 		<div class="col-md-6">
-		    <h2>&#8203;</h2>
+
 		    <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
 		    <div class="input-group">
 			<span class="btn btn-default input-group-addon" onclick="toggle_text()" name="txt_toggle" id="txt_toggle_btn">Text</span>
