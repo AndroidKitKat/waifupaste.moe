@@ -65,14 +65,13 @@ font-family: 'Kanna'
 <b>注意：</b>ワイフーペスト・ベーターは買え初中です。アップデートについてはベータ版<a href="https://beta.waifupaste.moe/">ワイフーペースト</a>をごちん下さい。</h1>
         </div>
     <div class="row">
-        <div class="col-md-6">
             <h2>URLを短縮</h2>
+        <div class="col-md-6">
             <pre>
 curl -d "$URL" https://waifupaste.moe/url
 </pre>
         </div>
         <div class="col-md-6">
-            <h2>&#8203;</h2>
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="URL" id="URL_to_copy" style="height: 39px">
                 <span class="input-group-btn">
@@ -85,14 +84,13 @@ curl -d "$URL" https://waifupaste.moe/url
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
             <h2>ファイルを貼りつきけ</h2>
+        <div class="col-md-6">
             <pre>
 curl --data-binary @- https://waifupaste.moe/paste < $FILE
 </pre>
         </div>
         <div class="col-md-6">
-            <h2>&#8203;</h2>
             <form name="myForm" action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
                 <div class="input-group">
 	    <span class="btn btn-default input-group-addon" onclick="toggleText()" name="txt_toggle" id="txt_toggle_btn">テキスト</span>
