@@ -30,11 +30,7 @@ function toggle_text(){
 	$('#text_input_box').toggle();
 	$('#paste_file_btn').toggle();
 	$('#text_file_btn').toggle();
-	if($('#txt_toggle_btn').text() === "Text"){
-                $('#txt_toggle_btn').text("File");
-        } else {
-                $('#txt_toggle_btn').text("Text");
-        };
+	$('#txt_toggle_btn').find('i').toggleClass('fa-file fa-file-text-o');
 }
 
 function post_text() {

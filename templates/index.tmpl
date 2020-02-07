@@ -68,7 +68,9 @@ curl --data-binary @- https://yld.me/paste < $TEXT
 
 		    <form action="/paste" method="POST" enctype="multipart/form-data" id="paste_file_form">
 		    <div class="input-group">
-			<span class="btn btn-default input-group-addon" onclick="toggle_text()" name="txt_toggle" id="txt_toggle_btn">Text</span>
+			<span class="btn btn-default input-group-addon" onclick="toggle_text()" name="txt_toggle" id="txt_toggle_btn">
+			    <i class="fa fa-file"></i>
+			</span>
 			<span class="btn btn-default btn-file input-group-addon" id="file_upload_btn">
 			    Browse <input type="file" name="source" ="form-control" id="file_to_paste">
 			</span>
