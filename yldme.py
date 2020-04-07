@@ -32,9 +32,9 @@ import pygments.util
 YLDME_ADDRESS   = '127.0.0.1'
 YLDME_PORT      = 9515
 TRUE_STRINGS    = ('1', 'true', 'on', 'yes')
-NUMBER_OF_WAIFUS =  len(os.listdir('assets/imgs/qts/png'))
-LOG_FILE = '/home/akk/.config/yldme/log.txt'
-URL_FILE = '/home/akk/.config/yldme/urls.txt'
+NUMBER_OF_WAIFUS =  len(os.listdir(os.path.dirname(os.path.realpath(__file__)) + '/assets/imgs/qts/png'))
+LOG_FILE = '/Users/akk/.config/yldme/log.txt'
+URL_FILE = '/Users/akk/.config/yldme/urls.txt'
 MIME_TYPES = {
     'image/jpeg': '.jpg',
     'image/png' : '.png',
@@ -57,13 +57,6 @@ MIME_TYPES = {
 }
 
 # Utilities
-
-def load_authorized_users():
-    with open('tokens.yaml', 'r') as token_file:
-        tokens = yaml.load_all(token_file)
-        for token in tokens:
-            for k, v in token.items():
-                AUTHORIZED_USERS[k] = v
 
 
 def random_waifu():
@@ -564,7 +557,6 @@ if __name__ == '__main__':
 
     options = tornado.options.options.as_dict()
     yldme   = YldMeApplication(**options)
-    load_authorized_users()
     try:
         import markdown
         import markdown.extensions.codehilite
