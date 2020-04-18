@@ -6972,3 +6972,9 @@ button.close {
 .panel-info .panel-title {
   color: #fff;
 }
+input {
+    font-family: monospace;
+}
+input::placeholder {
+    font-family: sans-serif;
+}
