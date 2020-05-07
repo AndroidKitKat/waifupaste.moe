@@ -308,7 +308,7 @@ class YldMeHandler(tornado.web.RequestHandler):
                         fs.write(value)
                 data = self.application.database.get(name)
             except (sqlite3.OperationalError, sqlite3.IntegrityError) as e:
-                self.application.logger.warn(e)
+                self.application.logger.warning(e)
                 self.application.logger.info('name: %s', name)
                 continue
 
@@ -382,7 +382,6 @@ class YldMeRawHandler(YldMeHandler):
     def post(self, type=None):
         self.request.arguments['raw'] = '1'
         return YldMeHandler.post(self, type)
-
 
 # Application
 
@@ -481,7 +480,7 @@ if __name__ == '__main__':
         import markdown
         import markdown.extensions.codehilite
     except ImportError:
-        yldme.logger.warn('Markdown module missing!')
+        yldme.logger.warning('Markdown module missing!')
 
     yldme.run()
 
