@@ -383,6 +383,14 @@ class YldMeRawHandler(YldMeHandler):
         self.request.arguments['raw'] = '1'
         return YldMeHandler.post(self, type)
 
+class YldMeRobotsHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.set_header('Content-Type', 'text/plain')
+        self.write('''# Block Webcrawlers
+User-agent: *
+Disallow: /
+''')
+
 # Application
 
 class YldMeApplication(tornado.web.Application):
@@ -408,6 +416,7 @@ class YldMeApplication(tornado.web.Application):
                 (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': self.assets_dir}),
                 (r'.*/md/(.*)'    , YldMeMarkdownHandler),
                 (r'.*/raw/(.*)'   , YldMeRawHandler),
+                (r'.*/robots.txt' , YldMeRobotsHandler),
                 (r'.*/(.*)'       , YldMeHandler),
         ])
 
