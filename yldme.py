@@ -36,6 +36,7 @@ MIME_TYPES = {
     'image/jpeg'        : '.jpg',
     'image/png'         : '.png',
     'video/mp4'         : '.mp4',
+    'video/x-matroska'  : '.mkv',
     'text/plain'        : '.txt',
     'text/x-c++'        : '.cpp',
     'text/x-python'     : '.py',
