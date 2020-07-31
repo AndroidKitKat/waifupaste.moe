@@ -259,7 +259,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         elif 'image/' in file_mime:
             file_html = '<div class="thumbnail text-center"><img src="/raw/{}" class="img-responsive"></div>'.format(name)
         elif 'video/' in file_mime:
-            file_html = '<div class="thumbnail text-center"><video controls><source src="/raw/{}" type="{}" class="embed-responsive"></video></div>'.format(name, file_mime)
+            file_html = '<div class="thumbnail text-center"><video controls><source src="/uploads/{}" type="{}" class="embed-responsive"></video></div>'.format(name, file_mime)
         else:
             file_html = '''
 <div class="btn-toolbar" style="text-align: center">
@@ -413,11 +413,12 @@ class YldMeApplication(tornado.web.Application):
         self.logger.info('Address:                 %s', self.address)
 
         self.add_handlers('.*', [
-                (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': self.assets_dir}),
-                (r'.*/md/(.*)'    , YldMeMarkdownHandler),
-                (r'.*/raw/(.*)'   , YldMeRawHandler),
-                (r'.*/robots.txt' , YldMeRobotsHandler),
-                (r'.*/(.*)'       , YldMeHandler),
+                (r'.*/assets/(.*)' , tornado.web.StaticFileHandler, {'path': self.assets_dir}),
+                (r'.*/uploads/(.*)', tornado.web.StaticFileHandler, {'path': self.uploads_dir}),
+                (r'.*/md/(.*)'     , YldMeMarkdownHandler),
+                (r'.*/raw/(.*)'    , YldMeRawHandler),
+                (r'.*/robots.txt'  , YldMeRobotsHandler),
+                (r'.*/(.*)'        , YldMeHandler),
         ])
 
     def generate_name(self):
