@@ -284,6 +284,9 @@ class YldMeHandler(tornado.web.RequestHandler):
         if 'source' in self.request.files:
             use_template = True
             value        = self.request.files['source'][0].body
+        elif 'file' in self.request.files:
+            use_template = False
+            value        = self.request.files['file'][0].body
         else:
             use_template = False
             value        = self.request.body
