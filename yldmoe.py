@@ -15,7 +15,7 @@ import subprocess
 import sys
 import time
 import yaml
-
+import datetime
 import tornado.ioloop
 import tornado.options
 import tornado.web
@@ -28,9 +28,12 @@ import pygments.util
 
 # Constants
 
-YLDME_ADDRESS   = '127.0.0.1'
-YLDME_PORT      = 9515
+YLDME_ADDRESS   = '0.0.0.0'
+YLDME_PORT      = 9516
 TRUE_STRINGS    = ('1', 'true', 'on', 'yes')
+
+LOG_FILE = '/home/yldmoe-admin/.config/yldme/log.txt'
+URL_FILE = '/home/yldmoe-admin/.config/yldme/urls.txt'
 
 MIME_TYPES = {
     'image/jpeg'        : '.jpg',
@@ -43,6 +46,15 @@ MIME_TYPES = {
 }
 
 # Utilities
+
+def log_url(wp_url, real_url, ip):
+    with open(URL_FILE, 'a') as url_file:
+        url_file.write('Time: {} | WP: {} | URL: {} | IP: {} | Source: YldMoe\n'.format(datetime.datetime.now(), wp_url, real_url, ip))
+
+def log_ip(extension, ip):
+    with open(LOG_FILE, 'a') as log_file:
+        log_file.write('Time: {} | URL: {} | IP: {} | Source: YldMoe\n'.format(datetime.datetime.now(), extension, ip))
+        return
 
 def make_parent_directories(path):
     dirname = os.path.dirname(path)
@@ -213,6 +225,14 @@ class Database(object):
 
 # Handlers
 
+class YldMeRobotsHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.set_header('Content-Type', 'text/plain')
+        self.write('''# Block Webcrawlers
+User-agent: *
+Disallow: /
+''')
+
 class YldMeHandler(tornado.web.RequestHandler):
 
     def get(self, name=None):
@@ -279,15 +299,26 @@ class YldMeHandler(tornado.web.RequestHandler):
     def _index(self):
         self.render('index.tmpl')
 
-    def post(self, type=None):
+    def post(self, type=None, imageJpeg=False):
+        if imageJpeg:
+            type = 'paste'
+
+        if type == 'image.jpeg' or type == 'image.jpg':
+            imgJpeg = True
+            type = 'paste'
+
         if 'source' in self.request.files:
             use_template = True
             value        = self.request.files['source'][0].body
+        elif 'file' in self.request.files:
+            use_template = False
+            value        = self.request.files['file'][0].body
         else:
             use_template = False
             value        = self.request.body
 
         if type == 'url':
+
             value_hash = value
         elif type == 'paste':
             value_hash = checksum(value)
@@ -308,7 +339,7 @@ class YldMeHandler(tornado.web.RequestHandler):
                         fs.write(value)
                 data = self.application.database.get(name)
             except (sqlite3.OperationalError, sqlite3.IntegrityError) as e:
-                self.application.logger.warning(e)
+                self.application.logger.warn(e)
                 self.application.logger.info('name: %s', name)
                 continue
 
@@ -316,23 +347,36 @@ class YldMeHandler(tornado.web.RequestHandler):
             raise tornado.web.HTTPError(500, 'Could not produce new database entry')
 
         preview_url = '{}/{}'.format(self.application.url, data.name)
+        #log urls
+        if type != 'paste':
+            log_url(preview_url, value, self.request.headers.get('CF-Connecting-IP',''))
+
         if type == 'paste':
             file_path = os.path.join(self.application.uploads_dir, data.name)
             file_mime = determine_mimetype(file_path)
             file_ext  = guess_extension(file_mime)
             raw_url   = '{}/raw/{}{}'.format(self.application.url, data.name, file_ext)
-
+            self.application.logger.info('Posted: {}'.format(raw_url))
+            log_ip(raw_url, self.request.headers.get('CF-Connecting-IP', ''))
+        
         if use_template:
             self.render('url.tmpl', name=data.name, preview_url=preview_url, raw_url=raw_url)
         else:
             self.set_header('Content-Type', 'text/plain')
-            if self.get_argument('raw', '').lower() in TRUE_STRINGS:
+            if imageJpeg:
+                self.write(raw_url)
+            elif self.get_argument('raw', '').lower() in TRUE_STRINGS:
                 self.write(raw_url)
             else:
                 self.write(preview_url + '\n')
 
+
     def put(self, type=None):
-        return self.post(type)
+        if type == 'image.jpeg' or type == 'image.jpg':
+            type == 'paste'
+            return self.post(type, True)
+        else:
+            return self.post(type)
 
 
 class YldMeMarkdownHandler(YldMeHandler):
@@ -408,6 +452,7 @@ class YldMeApplication(tornado.web.Application):
                 (r'.*/assets/(.*)', tornado.web.StaticFileHandler, {'path': self.assets_dir}),
                 (r'.*/md/(.*)'    , YldMeMarkdownHandler),
                 (r'.*/raw/(.*)'   , YldMeRawHandler),
+                (r'.*/robots.txt' , YldMeRobotsHandler),
                 (r'.*/(.*)'       , YldMeHandler),
         ])
 
@@ -426,7 +471,7 @@ class YldMeApplication(tornado.web.Application):
 
     def load_configuration(self, config_dir=None):
         self.config_dir  = os.path.expanduser(config_dir or '~/.config/yldme')
-        self.config_path = os.path.join(self.config_dir, 'config.yaml')
+        self.config_path = os.path.expanduser('~/.config/yldmoe/config.yaml')
 
         if os.path.exists(self.config_path):
             config = yaml.safe_load(open(self.config_path))
