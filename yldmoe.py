@@ -346,6 +346,7 @@ class YldMeHandler(tornado.web.RequestHandler):
             # value = base64.b64decode(self.get_argument('image'))
             image_base64_string = self.get_argument('image').encode()
             value = b64decode(image_base64_string)
+            isBase64 = True
             type = 'paste'
             
         if type == 'url':
