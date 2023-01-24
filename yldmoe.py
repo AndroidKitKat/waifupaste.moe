@@ -238,13 +238,17 @@ Disallow: /
 class YldMeHandler(tornado.web.RequestHandler):
 
     def set_default_headers(self):
-        self.set_header("Access-Control-Allow-Origin", "*")
-        self.set_header("Access-Control-Allow-Methods", "OPTIONS,POST")
-        self.set_header("Access-Control-Allow-Headers", "*")
+        if self.application.cors_allow_origin:
+            self.set_header("Access-Control-Allow-Origin", self.application.cors_allow_origin)
+        if self.application.cors_allow_methods:
+            self.set_header("Access-Control-Allow-Methods", self.application.cors_allow_methods)
+        if self.application.cors_allow_headers:
+            self.set_header("Access-Control-Allow-Headers", self.application.cors_allow_headers)
+        pass
+
 
     # needed for CORS, probably breaks all sorts of other things
     def options(self, *args):
-        print("what the frick")
         self.set_status(204)
         self.finish()
         
@@ -518,6 +522,7 @@ class YldMeApplication(tornado.web.Application):
         self.cors_allow_origin  = config.get('cors_allow_origin' , None)
         self.cors_allow_methods = config.get('cors_allow_methods', None)
         self.cors_allow_headers = config.get('cors_allow_headers', None)
+        
         
         
 
