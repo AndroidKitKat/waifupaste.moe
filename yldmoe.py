@@ -320,7 +320,7 @@ class YldMeHandler(tornado.web.RequestHandler):
         # legacy variable
         imageJpeg = False
         # new variable
-        base64 = False
+        isBase64 = False
         if extra_type == 'imgJpeg' or extra_type == 'base64':
             type = 'paste'
 
@@ -395,6 +395,17 @@ class YldMeHandler(tornado.web.RequestHandler):
             self.set_header('Content-Type', 'text/plain')
             if imageJpeg:
                 self.write(raw_url)
+            elif isBase64:
+                '''
+                The Glowing Bear API expects a JSON with structure like this:
+                {
+                    "data": {
+                        "link": "the url"
+                    }
+                }
+                '''
+                jsonResponse = {'data': {'link': raw_url}}
+                self.write(json.dumps(jsonResponse))
             elif self.get_argument('raw', '').lower() in TRUE_STRINGS:
                 self.write(raw_url)
             else:
