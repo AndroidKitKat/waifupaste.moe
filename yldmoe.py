@@ -318,14 +318,14 @@ class YldMeHandler(tornado.web.RequestHandler):
 
     def post(self, type=None, extra_type=None):
         # legacy variable
-        imgJpeg = False
+        imageJpeg = False
         # new variable
         base64 = False
         if extra_type == 'imgJpeg' or extra_type == 'base64':
             type = 'paste'
 
         if type == 'image.jpeg' or type == 'image.jpg':
-            imgJpeg = True
+            imageJpeg = True
             type = 'paste'
             
         if type == 'base64':
