@@ -510,11 +510,16 @@ class YldMeApplication(tornado.web.Application):
         self.logger.info('Configuration Directory: %s', self.config_dir)
         self.logger.info('Configuration Path:      %s', self.config_path)
 
-        self.url       = config.get('url'      , 'https://yld.me')
-        self.port      = config.get('port'     , 9515)
-        self.address   = config.get('address'  , '127.0.0.1')
-        self.alphabet  = config.get('alphabet' , string.ascii_letters + string.digits)
-        self.max_tries = config.get('max_tries', 10)
+        self.url                = config.get('url'               , 'https://yld.me')
+        self.port               = config.get('port'              , 9515)
+        self.address            = config.get('address'           , '127.0.0.1')
+        self.alphabet           = config.get('alphabet'          , string.ascii_letters + string.digits)
+        self.max_tries          = config.get('max_tries'         , 10)
+        self.cors_allow_origin  = config.get('cors_allow_origin' , None)
+        self.cors_allow_methods = config.get('cors_allow_methods', None)
+        self.cors_allow_headers = config.get('cors_allow_headers', None)
+        
+        
 
         self.logger.info('URL:                     %s', self.url)
         self.logger.info('Alphabet:                %s', self.alphabet)
