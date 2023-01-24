@@ -20,6 +20,8 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 
+from base64 import b64decode
+
 import pygments
 import pygments.lexers
 import pygments.formatters
@@ -235,6 +237,17 @@ Disallow: /
 
 class YldMeHandler(tornado.web.RequestHandler):
 
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Methods", "OPTIONS,POST")
+        self.set_header("Access-Control-Allow-Headers", "*")
+
+    # needed for CORS, probably breaks all sorts of other things
+    def options(self, *args):
+        print("what the frick")
+        self.set_status(204)
+        self.finish()
+        
     def get(self, name=None):
         if name is None:
             return self._index()
@@ -299,13 +312,20 @@ class YldMeHandler(tornado.web.RequestHandler):
     def _index(self):
         self.render('index.tmpl')
 
-    def post(self, type=None, imageJpeg=False):
-        if imageJpeg:
+    def post(self, type=None, extra_type=None):
+        # legacy variable
+        imgJpeg = False
+        # new variable
+        base64 = False
+        if extra_type == 'imgJpeg' or extra_type == 'base64':
             type = 'paste'
 
         if type == 'image.jpeg' or type == 'image.jpg':
             imgJpeg = True
             type = 'paste'
+            
+        if type == 'base64':
+            base64 = True
 
         if 'source' in self.request.files:
             use_template = True
@@ -316,9 +336,15 @@ class YldMeHandler(tornado.web.RequestHandler):
         else:
             use_template = False
             value        = self.request.body
-
+        
+        if type == 'base64':
+            use_template = False
+            # value = base64.b64decode(self.get_argument('image'))
+            image_base64_string = self.get_argument('image').encode()
+            value = b64decode(image_base64_string)
+            type = 'paste'
+            
         if type == 'url':
-
             value_hash = value
         elif type == 'paste':
             value_hash = checksum(value)
@@ -374,7 +400,10 @@ class YldMeHandler(tornado.web.RequestHandler):
     def put(self, type=None):
         if type == 'image.jpeg' or type == 'image.jpg':
             type == 'paste'
-            return self.post(type, True)
+            return self.post(type, 'imgJpeg')
+        elif type == 'base64':
+            type = 'paste'
+            return self.post(type, 'base64')
         else:
             return self.post(type)
 
