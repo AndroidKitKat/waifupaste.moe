@@ -277,7 +277,7 @@ class YldMeHandler(tornado.web.RequestHandler):
                         fs.write(value)
                 data = self.application.database.get(name)
             except (sqlite3.OperationalError, sqlite3.IntegrityError) as e:
-                self.application.logger.warn(e)
+                self.application.logger.warning(e)
                 self.application.logger.info('name: %s', name)
                 continue
 
@@ -448,7 +448,7 @@ if __name__ == '__main__':
         import markdown
         import markdown.extensions.codehilite
     except ImportError:
-        yldme.logger.warn('Shit is missing dog')
+        yldme.logger.warning('Shit is missing dog')
     yldme   = YldMeApplication(**options)
     yldme.run()
 
